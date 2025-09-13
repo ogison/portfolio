@@ -11,23 +11,40 @@ interface MessageWindowProps {
 
 const messages = {
   about:
-    "ゆうしゃ Name は なかまに なりたそうに こちらを みている！\n\n都内で働くWebエンジニアです。面白い技術とおいしいコーヒーが好きです。フロントエンドからバックエンドまで、冒険の仲間を募集しています！",
+    "おや？ 旅人よ、ようこそ 我が館へ！\n" +
+    "ここでは ogison の ひみつを 少しばかり のぞくことができるんだ。\n\n" +
+    "・展示された宝（作品）\n" +
+    "・封印の書物（スキル） \n" +
+    "・旅人へのしるべ（コンタクト）\n\n" +
+    "さあ、どれを 見てみるかい？",
   skills:
     "ゆうしゃは かずかずの じゅもんを おぼえた！\n\nメラ：HTML\nギラ：CSS\nヒャド：JavaScript\nイオ：React/Vue\nライデイン：Node.js\nベホイミ：Git/GitHub\nルーラ：AWS",
   works:
     "これまでに てにいれた どうぐの いちらんだ。\n\n・伝説の剣(ポートフォリオ)\n・賢者の石(ブログ)\n・王者の盾(〇〇社でのプロジェクト)",
   contact:
-    "てんのおつげを ききますか？\n\n・ほうしの とまりぎ (GitHub)\n・たびびとの さかば (X/Twitter)\n・てんしへの いのり (Email)",
+    "やあ、ここまで来てくれてありがとう。\n" +
+    "外の世界で また会えるように\n" +
+    "しるべを 用意しておいたよ。\n\n" +
+    "・ねこの かげ（GitHub）\n" +
+    "・くろき X のしるし（X/Twitter）\n" +
+    "さあ、好きな場所で 声をかけてくれ。",
+};
+
+const contactLinks = {
+  github: "https://github.com/ogison",
+  twitter: "https://x.com/ogison999",
 };
 
 export default function MessageWindow({ selectedMenuItem, onTypingChange }: MessageWindowProps) {
   const [displayedText, setDisplayedText] = useState("");
   const [showCursor, setShowCursor] = useState(false);
+  const [isTypingComplete, setIsTypingComplete] = useState(false);
 
   useEffect(() => {
     const message = messages[selectedMenuItem];
     setDisplayedText("");
     setShowCursor(false);
+    setIsTypingComplete(false);
     onTypingChange?.(true);
 
     let currentIndex = 0;
@@ -37,6 +54,7 @@ export default function MessageWindow({ selectedMenuItem, onTypingChange }: Mess
         currentIndex++;
       } else {
         setShowCursor(true);
+        setIsTypingComplete(true);
         onTypingChange?.(false);
         clearInterval(typeInterval);
       }
@@ -49,6 +67,52 @@ export default function MessageWindow({ selectedMenuItem, onTypingChange }: Mess
   }, [selectedMenuItem, onTypingChange]);
 
   const formatText = (text: string) => {
+    if (selectedMenuItem === "contact" && isTypingComplete) {
+      const lines = text.split("\n");
+      return lines.map((line, index) => {
+        let processedLine: React.ReactNode = line;
+
+        if (line.includes("GitHub")) {
+          processedLine = (
+            <>
+              {line.substring(0, line.indexOf("GitHub"))}
+              <a
+                href={contactLinks.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.link}
+              >
+                GitHub
+              </a>
+              {line.substring(line.indexOf("GitHub") + 6)}
+            </>
+          );
+        } else if (line.includes("X/Twitter")) {
+          processedLine = (
+            <>
+              {line.substring(0, line.indexOf("X/Twitter"))}
+              <a
+                href={contactLinks.twitter}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.link}
+              >
+                X/Twitter
+              </a>
+              {line.substring(line.indexOf("X/Twitter") + 9)}
+            </>
+          );
+        }
+
+        return (
+          <span key={index}>
+            {processedLine}
+            {index < lines.length - 1 && <br />}
+          </span>
+        );
+      });
+    }
+
     return text.split("\n").map((line, index) => (
       <span key={index}>
         {line}

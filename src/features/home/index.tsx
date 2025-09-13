@@ -7,6 +7,13 @@ import PixelAvatar from "@/features/avatar";
 import MenuGrid, { type MenuItem } from "@/features/menu";
 import MessageWindow from "@/features/message";
 
+const menuItems = [
+  { id: "about" as MenuItem, label: "はなす" },
+  { id: "skills" as MenuItem, label: "展示された宝（作品）  " },
+  { id: "works" as MenuItem, label: "封印の書物（スキル） " },
+  { id: "contact" as MenuItem, label: "旅人へのしるべ（コンタクト）" },
+];
+
 export default function Home() {
   const [gameStarted, setGameStarted] = useState(false);
   const [activeMenuIndex, setActiveMenuIndex] = useState(0);
@@ -34,6 +41,11 @@ export default function Home() {
 
   const handleMenuSelect = (item: MenuItem) => {
     setSelectedMenuItem(item);
+    // 選択されたアイテムのインデックスを取得してactiveMenuIndexも更新
+    const itemIndex = menuItems.findIndex(menuItem => menuItem.id === item);
+    if (itemIndex !== -1) {
+      setActiveMenuIndex(itemIndex);
+    }
   };
 
   const handleMenuChange = (index: number) => {
@@ -60,6 +72,7 @@ export default function Home() {
             activeIndex={activeMenuIndex}
             onMenuSelect={handleMenuSelect}
             onMenuChange={handleMenuChange}
+            menuItems={menuItems}
           />
         </div>
         <div>
