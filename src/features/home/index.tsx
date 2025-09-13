@@ -17,7 +17,7 @@ const menuItems = [
 export default function Home() {
   const [gameStarted, setGameStarted] = useState(false);
   const [activeMenuIndex, setActiveMenuIndex] = useState(0);
-  const [selectedMenuItem, setSelectedMenuItem] = useState<MenuItem>("about");
+  const [selectedMenuItem, setSelectedMenuItem] = useState<MenuItem>("welcome");
   const [startScreenOpacity, setStartScreenOpacity] = useState(1);
   const [isTyping, setIsTyping] = useState(false);
 

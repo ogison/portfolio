@@ -122,11 +122,11 @@ export function formatWorksText(
 
         processedLine = (
           <>
-            {beforeTitle}
-            【<ContactLink href={url} className={linkClassName}>
+            {beforeTitle}【
+            <ContactLink href={url} className={linkClassName}>
               {fullTitle}
-            </ContactLink>】
-            {afterTitle}
+            </ContactLink>
+            】{afterTitle}
           </>
         );
       }
