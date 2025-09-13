@@ -3,22 +3,21 @@
 import { useEffect, useState } from "react";
 import styles from "./menu.module.scss";
 
-export type MenuItem = "about" | "skills" | "works" | "contact";
+export type MenuItem = "welcome" | "about" | "skills" | "works" | "contact";
 
 interface MenuGridProps {
   activeIndex: number;
   onMenuSelect: (item: MenuItem) => void;
   onMenuChange: (index: number) => void;
+  menuItems: Array<{ id: MenuItem; label: string }>;
 }
 
-const menuItems = [
-  { id: "about" as MenuItem, label: "はなす" },
-  { id: "skills" as MenuItem, label: "じゅもん" },
-  { id: "works" as MenuItem, label: "どうぐ" },
-  { id: "contact" as MenuItem, label: "いのる" },
-];
-
-export default function MenuGrid({ activeIndex, onMenuSelect, onMenuChange }: MenuGridProps) {
+export default function MenuGrid({
+  activeIndex,
+  onMenuSelect,
+  onMenuChange,
+  menuItems,
+}: MenuGridProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
