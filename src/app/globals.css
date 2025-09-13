@@ -1,13 +1,184 @@
 @import "tailwindcss";
 
 :root {
-  --background: #212529;
+  --background: #000000;
   --foreground: #ffffff;
+  --accent: #e60012;
+  --success: #33ff33;
+  --info: #3333ff;
+}
+
+html {
+  background-color: #000;
+}
+
+html,
+body,
+#__next {
+  margin: 0;
+  padding: 0;
+  min-height: 100dvh; /* モバイルのアドレスバー変動に強い */
+  background-color: #000 !important; /* 最優先で黒 */
+}
+
+html,
+body {
+  background-color: #000;
+  min-height: 100vh;
+  margin: 0; /* ← これがないと外側に白い余白が出ることがあります */
+  padding: 0;
 }
 
 body {
-  background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-press-start-2p), cursive;
+  font-family: "DotGothic16", sans-serif;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* NES.cssのデフォルト文字色を上書きして白色を強制適用 */
+*,
+*::before,
+*::after {
+  color: #ffffff !important;
+}
+
+.font-press-start {
+  font-family: var(--font-press-start-2p), cursive;
+}
+
+.game-container {
+  width: 100%;
+  max-width: 1200px;
+  height: 100vh;
+  border: 4px solid #fff;
+  padding: 16px;
+  background-color: var(--background);
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+}
+
+.window {
+  border: 4px solid #fff;
+  padding: 1rem;
+  background-color: var(--background);
+  position: relative;
+}
+
+.window::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 8px;
+  height: 8px;
+  background-color: var(--background);
+  box-shadow: 4px 4px 0 #fff;
+}
+
+.window::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  background-color: var(--background);
+  box-shadow: -4px 4px 0 #fff;
+}
+
+.window-bottom-left::before {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: -4px;
+  width: 8px;
+  height: 8px;
+  background-color: var(--background);
+  box-shadow: 4px -4px 0 #fff;
+}
+
+.window-bottom-right::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  background-color: var(--background);
+  box-shadow: -4px -4px 0 #fff;
+}
+
+.menu-item {
+  cursor: pointer;
+  position: relative;
+  padding-left: 24px;
+  transition: all 0.1s;
+}
+
+.menu-item.active::before {
+  content: "▶";
+  position: absolute;
+  left: 0;
+  top: 0;
+  animation: blink 1s step-end infinite;
+}
+
+.menu-item:hover {
+  color: var(--accent);
+}
+
+.progress-bar-container {
+  height: 16px;
+  border: 2px solid #fff;
+  background-color: #333;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: var(--success);
+  transition: width 0.3s ease;
+}
+
+.progress-bar.mp {
+  background-color: var(--info);
+}
+
+.typewriter-cursor {
+  display: inline-block;
+  width: 10px;
+  height: 1.2em;
+  background-color: white;
+  animation: blink 1s step-end infinite;
+  vertical-align: bottom;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+#start-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  z-index: 9999;
+  transition: opacity 0.5s;
+}
+
+#start-screen > div {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
 }
