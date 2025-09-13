@@ -1,54 +1,41 @@
-export default function PixelAvatar() {
+"use client";
+
+import { useEffect, useState } from "react";
+import Image from "next/image";
+
+interface PixelAvatarProps {
+  isTyping?: boolean;
+}
+
+export default function PixelAvatar({ isTyping = false }: PixelAvatarProps) {
+  const [currentImage, setCurrentImage] = useState(0);
+
+  useEffect(() => {
+    if (!isTyping) {
+      setCurrentImage(0);
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setCurrentImage((prev) => (prev === 0 ? 1 : 0));
+    }, 250);
+
+    return () => clearInterval(interval);
+  }, [isTyping]);
+
+  const imageSrc = currentImage === 0 ? "/avatar.png" : "/avatar_2.png";
+
   return (
-    <div className="w-32 h-32 bg-gray-700 border-4 border-white p-1">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 16 16"
+    <div className="w-60 h-60 bg-gray-700 border-4 border-white p-1">
+      <Image
+        src={imageSrc}
+        alt="Pixel Art Avatar"
+        width={128}
+        height={128}
         className="w-full h-full"
         style={{ imageRendering: "pixelated" }}
-      >
-        <title>Pixel Art Avatar</title>
-        <rect width="1" height="1" x="6" y="2" fill="#222" />
-        <rect width="1" height="1" x="9" y="2" fill="#222" />
-        <rect width="1" height="1" x="5" y="3" fill="#222" />
-        <rect width="1" height="1" x="10" y="3" fill="#222" />
-        <rect width="1" height="1" x="4" y="4" fill="#222" />
-        <rect width="1" height="1" x="11" y="4" fill="#222" />
-        <rect width="1" height="1" x="4" y="5" fill="#222" />
-        <rect width="1" height="1" x="6" y="5" fill="#fff" />
-        <rect width="1" height="1" x="9" y="5" fill="#fff" />
-        <rect width="1" height="1" x="11" y="5" fill="#222" />
-        <rect width="1" height="1" x="4" y="6" fill="#222" />
-        <rect width="1" height="1" x="5" y="6" fill="#ddc9a3" />
-        <rect width="1" height="1" x="6" y="6" fill="#222" />
-        <rect width="1" height="1" x="7" y="6" fill="#222" />
-        <rect width="1" height="1" x="8" y="6" fill="#222" />
-        <rect width="1" height="1" x="9" y="6" fill="#222" />
-        <rect width="1" height="1" x="10" y="6" fill="#ddc9a3" />
-        <rect width="1" height="1" x="11" y="6" fill="#222" />
-        <rect width="1" height="1" x="3" y="7" fill="#222" />
-        <rect width="1" height="1" x="12" y="7" fill="#222" />
-        <rect width="1" height="1" x="4" y="7" fill="#ddc9a3" />
-        <rect width="1" height="1" x="5" y="7" fill="#ddc9a3" />
-        <rect width="1" height="1" x="6" y="7" fill="#ddc9a3" />
-        <rect width="1" height="1" x="7" y="7" fill="#ddc9a3" />
-        <rect width="1" height="1" x="8" y="7" fill="#ddc9a3" />
-        <rect width="1" height="1" x="9" y="7" fill="#ddc9a3" />
-        <rect width="1" height="1" x="10" y="7" fill="#ddc9a3" />
-        <rect width="1" height="1" x="11" y="7" fill="#ddc9a3" />
-        <rect width="1" height="1" x="5" y="8" fill="#ddc9a3" />
-        <rect width="1" height="1" x="6" y="8" fill="#ddc9a3" />
-        <rect width="1" height="1" x="7" y="8" fill="#ddc9a3" />
-        <rect width="1" height="1" x="8" y="8" fill="#ddc9a3" />
-        <rect width="1" height="1" x="9" y="8" fill="#ddc9a3" />
-        <rect width="1" height="1" x="10" y="8" fill="#ddc9a3" />
-        <rect width="1" height="1" x="6" y="9" fill="#ddc9a3" />
-        <rect width="1" height="1" x="7" y="9" fill="#ddc9a3" />
-        <rect width="1" height="1" x="8" y="9" fill="#ddc9a3" />
-        <rect width="1" height="1" x="9" y="9" fill="#ddc9a3" />
-        <rect width="1" height="1" x="7" y="10" fill="#ddc9a3" />
-        <rect width="1" height="1" x="8" y="10" fill="#ddc9a3" />
-      </svg>
+        priority
+      />
     </div>
   );
 }

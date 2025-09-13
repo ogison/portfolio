@@ -12,6 +12,7 @@ export default function Home() {
   const [activeMenuIndex, setActiveMenuIndex] = useState(0);
   const [selectedMenuItem, setSelectedMenuItem] = useState<MenuItem>("about");
   const [startScreenOpacity, setStartScreenOpacity] = useState(1);
+  const [isTyping, setIsTyping] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -53,7 +54,7 @@ export default function Home() {
       <main className="flex flex-col lg:flex-row gap-4 flex-1">
         <div className="flex flex-col gap-4">
           <div className="window flex-grow flex items-center justify-center p-4">
-            <PixelAvatar />
+            <PixelAvatar isTyping={isTyping} />
           </div>
           <MenuGrid
             activeIndex={activeMenuIndex}
@@ -62,7 +63,7 @@ export default function Home() {
           />
         </div>
         <div>
-          <MessageWindow selectedMenuItem={selectedMenuItem} />
+          <MessageWindow selectedMenuItem={selectedMenuItem} onTypingChange={setIsTyping} />
         </div>
       </main>
     </div>

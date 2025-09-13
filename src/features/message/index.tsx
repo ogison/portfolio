@@ -6,6 +6,7 @@ import styles from "./MessageWindow.module.scss";
 
 interface MessageWindowProps {
   selectedMenuItem: MenuItem;
+  onTypingChange?: (isTyping: boolean) => void;
 }
 
 const messages = {
@@ -19,7 +20,7 @@ const messages = {
     "てんのおつげを ききますか？\n\n・ほうしの とまりぎ (GitHub)\n・たびびとの さかば (X/Twitter)\n・てんしへの いのり (Email)",
 };
 
-export default function MessageWindow({ selectedMenuItem }: MessageWindowProps) {
+export default function MessageWindow({ selectedMenuItem, onTypingChange }: MessageWindowProps) {
   const [displayedText, setDisplayedText] = useState("");
   const [showCursor, setShowCursor] = useState(false);
 
@@ -27,6 +28,7 @@ export default function MessageWindow({ selectedMenuItem }: MessageWindowProps) 
     const message = messages[selectedMenuItem];
     setDisplayedText("");
     setShowCursor(false);
+    onTypingChange?.(true);
 
     let currentIndex = 0;
     const typeInterval = setInterval(() => {
@@ -35,12 +37,16 @@ export default function MessageWindow({ selectedMenuItem }: MessageWindowProps) 
         currentIndex++;
       } else {
         setShowCursor(true);
+        onTypingChange?.(false);
         clearInterval(typeInterval);
       }
     }, 50);
 
-    return () => clearInterval(typeInterval);
-  }, [selectedMenuItem]);
+    return () => {
+      clearInterval(typeInterval);
+      onTypingChange?.(false);
+    };
+  }, [selectedMenuItem, onTypingChange]);
 
   const formatText = (text: string) => {
     return text.split("\n").map((line, index) => (
