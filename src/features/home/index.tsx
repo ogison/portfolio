@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import StartScreen from "@/components/StartScreen";
-import GameHeader from "@/components/GameHeader";
-import PixelAvatar from "@/components/PixelAvatar";
-import MenuGrid, { type MenuItem } from "@/components/MenuGrid";
-import MessageWindow from "@/components/MessageWindow";
+import GameHeader from "@/features/header";
+import PixelAvatar from "@/features/avatar";
+import MenuGrid, { type MenuItem } from "@/features/menu";
+import MessageWindow from "@/features/message";
 
 export default function Home() {
   const [gameStarted, setGameStarted] = useState(false);
@@ -50,8 +50,8 @@ export default function Home() {
   return (
     <div className="game-container">
       <GameHeader />
-      <main className="flex flex-col md:flex-row gap-4 flex-1">
-        <div className="md:w-1/2 flex flex-col gap-4">
+      <main className="flex flex-col lg:flex-row gap-4 flex-1">
+        <div className="flex flex-col gap-4">
           <div className="window flex-grow flex items-center justify-center p-4">
             <PixelAvatar />
           </div>
@@ -61,7 +61,9 @@ export default function Home() {
             onMenuChange={handleMenuChange}
           />
         </div>
-        <MessageWindow selectedMenuItem={selectedMenuItem} />
+        <div>
+          <MessageWindow selectedMenuItem={selectedMenuItem} />
+        </div>
       </main>
     </div>
   );

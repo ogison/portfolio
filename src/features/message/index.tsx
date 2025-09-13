@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { MenuItem } from "./MenuGrid";
+import type { MenuItem } from "../menu";
+import styles from "./MessageWindow.module.scss";
 
 interface MessageWindowProps {
   selectedMenuItem: MenuItem;
@@ -51,14 +52,14 @@ export default function MessageWindow({ selectedMenuItem }: MessageWindowProps) 
   };
 
   return (
-    <div className="md:w-1/2 window window-bottom-left window-bottom-right flex flex-col flex-1">
-      <div className="flex-grow overflow-y-auto">
-        <p className="text-lg leading-relaxed">
+    <div className={`${styles.container} ${styles.bottomCorners}`}>
+      <div className={styles.textArea}>
+        <p className={styles.text}>
           {formatText(displayedText)}
-          {showCursor && <span className="typewriter-cursor"></span>}
+          {showCursor && <span className={styles.cursor}></span>}
         </p>
       </div>
-      <div className="text-right text-2xl animate-bounce">▼</div>
+      <div className={styles.arrow}>▼</div>
     </div>
   );
 }
