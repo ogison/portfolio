@@ -12,8 +12,12 @@ interface MenuGridProps {
   menuItems: Array<{ id: MenuItem; label: string }>;
 }
 
-
-export default function MenuGrid({ activeIndex, onMenuSelect, onMenuChange, menuItems }: MenuGridProps) {
+export default function MenuGrid({
+  activeIndex,
+  onMenuSelect,
+  onMenuChange,
+  menuItems,
+}: MenuGridProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

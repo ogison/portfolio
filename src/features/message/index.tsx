@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { MenuItem } from "../menu";
 import styles from "./MessageWindow.module.scss";
+import { formatContactText, formatWorksText } from "@/features/message/contactUtils";
 
 interface MessageWindowProps {
   selectedMenuItem: MenuItem;
@@ -18,21 +19,52 @@ const messages = {
     "・旅人へのしるべ（コンタクト）\n\n" +
     "さあ、どれを 見てみるかい？",
   skills:
-    "ゆうしゃは かずかずの じゅもんを おぼえた！\n\nメラ：HTML\nギラ：CSS\nヒャド：JavaScript\nイオ：React/Vue\nライデイン：Node.js\nベホイミ：Git/GitHub\nルーラ：AWS",
+    "おや？ 旅人よ、封印の書物を ひらいてしまったのか。\n" +
+    "ここには ogison が 旅のあいだに 身につけた技と、\n" +
+    "あつかってきた道具の記録が 記されているんだ。\n\n" +
+    "【術・技】\n" +
+    "・HTML —— 世界の骨格を形づくる力\n" +
+    "・CSS —— 彩りを与える装飾の術\n" +
+    "・JavaScript —— 動きを吹き込む生命の術\n" +
+    "・React —— UIを自在に操る秘術\n" +
+    "・Next.js —— 影と光を操り 未来を描く術\n" +
+    "・Git / GitHub —— 仲間と絆を結ぶ協調の術\n" +
+    "・AWS —— 遠き場所へ瞬時に渡る転移の力\n" +
+    "・Python —— 知恵と解析を操る賢者の術\n" +
+    "・Java —— 堅牢な城壁を築く騎士の力\n" +
+    "・Spring —— 大地に根ざし、強固な基盤を支える術\n\n" +
+    "【道具・ツール】\n" +
+    "・Docker —— 船出を助ける 移動する港\n" +
+    "・Notion —— 知識を収める 無限の書庫\n" +
+    "・Slack —— 仲間と声を交わす 伝令の水晶\n" +
+    "・Jira —— クエストを管理する 任務の巻物\n" +
+    "・Claude —— 賢者のごとく 助言を授ける霊\n" +
+    "・V0 —— 形なき力を即座に形にする 魔導の炉\n" +
+    "・Sentry —— 闇を見張り 不具合を暴く番兵\n" +
+    "・Datadog —— 世界を見渡す 千里眼の獣\n" +
+    "・Cursor —— 書を操る 魔法の羽ペン\n" +
+    "・Backlog —— 任務を束ねる 冒険者ギルドの帳簿\n" +
+    "・Redmine —— 記録を刻む 古き石板\n\n" +
+    "さあ、どの力や道具を 見てみるかい？",
   works:
-    "これまでに てにいれた どうぐの いちらんだ。\n\n・伝説の剣(ポートフォリオ)\n・賢者の石(ブログ)\n・王者の盾(〇〇社でのプロジェクト)",
+    "展示された宝の もくろくだ。\n\n" +
+    "【ogison の館（ポートフォリオ）】\n" +
+    "→ ウーパールーパーの館主がおくる、冒険のしるべとなる館。\n" +
+    "　技術・作品・物語が すべてこの場所に つどっている。\n\n" +
+    "【PLAYLISTER X】\n" +
+    "→ Spotify のちからで プレイリストを つくる道具。\n" +
+    "　※ APIの都合により、作成は さくしゃ本人のみ 可能だ。\n\n" +
+    "【AI Selector】\n" +
+    "→ 生成AI（Gemini）が 選択肢から ひとつを えらんでくれる占い箱。\n" +
+    "　AIの独断と偏見で けつだんを 下してくれるぞ。",
   contact:
     "やあ、ここまで来てくれてありがとう。\n" +
     "外の世界で また会えるように\n" +
     "しるべを 用意しておいたよ。\n\n" +
     "・ねこの かげ（GitHub）\n" +
     "・くろき X のしるし（X/Twitter）\n" +
+    "・みどりの知恵の書（Qiita)\n" +
     "さあ、好きな場所で 声をかけてくれ。",
-};
-
-const contactLinks = {
-  github: "https://github.com/ogison",
-  twitter: "https://x.com/ogison999",
 };
 
 export default function MessageWindow({ selectedMenuItem, onTypingChange }: MessageWindowProps) {
@@ -58,7 +90,7 @@ export default function MessageWindow({ selectedMenuItem, onTypingChange }: Mess
         onTypingChange?.(false);
         clearInterval(typeInterval);
       }
-    }, 50);
+    }, 25);
 
     return () => {
       clearInterval(typeInterval);
@@ -67,50 +99,12 @@ export default function MessageWindow({ selectedMenuItem, onTypingChange }: Mess
   }, [selectedMenuItem, onTypingChange]);
 
   const formatText = (text: string) => {
-    if (selectedMenuItem === "contact" && isTypingComplete) {
-      const lines = text.split("\n");
-      return lines.map((line, index) => {
-        let processedLine: React.ReactNode = line;
+    if (selectedMenuItem === "contact") {
+      return formatContactText(text, isTypingComplete, styles.link);
+    }
 
-        if (line.includes("GitHub")) {
-          processedLine = (
-            <>
-              {line.substring(0, line.indexOf("GitHub"))}
-              <a
-                href={contactLinks.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.link}
-              >
-                GitHub
-              </a>
-              {line.substring(line.indexOf("GitHub") + 6)}
-            </>
-          );
-        } else if (line.includes("X/Twitter")) {
-          processedLine = (
-            <>
-              {line.substring(0, line.indexOf("X/Twitter"))}
-              <a
-                href={contactLinks.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.link}
-              >
-                X/Twitter
-              </a>
-              {line.substring(line.indexOf("X/Twitter") + 9)}
-            </>
-          );
-        }
-
-        return (
-          <span key={index}>
-            {processedLine}
-            {index < lines.length - 1 && <br />}
-          </span>
-        );
-      });
+    if (selectedMenuItem === "works") {
+      return formatWorksText(text, isTypingComplete, styles.link);
     }
 
     return text.split("\n").map((line, index) => (
