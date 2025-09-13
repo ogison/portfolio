@@ -1,0 +1,100 @@
+.container {
+  border: 4px solid #fff;
+  padding: 1rem;
+  background-color: var(--background);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  // Window corner decorations
+  &::before {
+    content: "";
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    width: 8px;
+    height: 8px;
+    background-color: var(--background);
+    box-shadow: 4px 4px 0 #fff;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 8px;
+    height: 8px;
+    background-color: var(--background);
+    box-shadow: -4px 4px 0 #fff;
+  }
+
+  // Bottom corners
+  &.bottomCorners {
+    &::before {
+      content: "";
+      position: absolute;
+      bottom: -4px;
+      left: -4px;
+      width: 8px;
+      height: 8px;
+      background-color: var(--background);
+      box-shadow: 4px -4px 0 #fff;
+      top: auto;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: -4px;
+      right: -4px;
+      width: 8px;
+      height: 8px;
+      background-color: var(--background);
+      box-shadow: -4px -4px 0 #fff;
+      top: auto;
+    }
+  }
+}
+
+.textArea {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.text {
+  font-size: 1.125rem; // text-lg
+  line-height: 1.625; // leading-relaxed
+}
+
+.cursor {
+  display: inline-block;
+  width: 10px;
+  height: 1.2em;
+  background-color: white;
+  animation: blink 1s step-end infinite;
+  vertical-align: bottom;
+}
+
+.arrow {
+  text-align: right;
+  font-size: 1.5rem; // text-2xl
+  animation: bounce 1s infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-0.25rem);
+  }
+}
