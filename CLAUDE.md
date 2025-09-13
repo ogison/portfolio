@@ -31,6 +31,7 @@ npm run prepare
 ## Architecture & Structure
 
 ### Tech Stack
+
 - **Framework**: Next.js 15.5.2 with App Router + React 19
 - **Language**: TypeScript 5.6+ (strict mode)
 - **Build Tool**: Turbopack (dev & production)
@@ -42,8 +43,10 @@ npm run prepare
 ### Key Design Patterns
 
 #### 1. Famicom/8-bit UI Components
+
 All UI components follow retro gaming conventions:
-- **Color Palette**: 
+
+- **Color Palette**:
   - Primary accent: `#e60012` (Nintendo red)
   - Background: `#1a1a1a`
   - Text: `#f5f5f5`
@@ -52,6 +55,7 @@ All UI components follow retro gaming conventions:
 - **Typography**: Press Start 2P font for headings, maintaining readability
 
 #### 2. Component Structure
+
 ```
 src/components/
 ├── Hero.tsx           # Landing hero section with "PRESS START" CTA
@@ -61,7 +65,9 @@ src/components/
 ```
 
 #### 3. Keyboard Navigation
+
 The site supports full keyboard navigation:
+
 - Arrow keys for menu navigation
 - Enter/Space for selection
 - Escape to close menus
@@ -70,6 +76,7 @@ The site supports full keyboard navigation:
 ## Design Requirements (from docs/portfolio-content-ja.md)
 
 ### Content Sections to Implement
+
 - **Home**: Hero, 3-line summary, project highlights, CTAs
 - **About**: Personal introduction, timeline, work style
 - **Skills**: Core competencies, tech stack, design principles
@@ -80,7 +87,9 @@ The site supports full keyboard navigation:
 - **Contact**: Form with spam protection, social links
 
 ### Project Card Data Structure
+
 Projects should include:
+
 - Title, summary, role, team composition
 - Impact metrics (quantified improvements)
 - Tech stack tags
@@ -90,16 +99,14 @@ Projects should include:
 ## Styling Guidelines
 
 ### CSS Custom Properties
+
 ```css
---background: #1a1a1a
---foreground: #f5f5f5
---accent: #e60012
---success: #92cc41
---warning: #f7d51d
---error: #e76e55
+--background: #1a1a1a --foreground: #f5f5f5 --accent: #e60012 --success: #92cc41 --warning: #f7d51d
+  --error: #e76e55;
 ```
 
 ### Responsive Design
+
 - Mobile-first approach
 - Breakpoints: `md:768px`, `lg:1024px`
 - Touch-friendly with keyboard fallbacks
@@ -107,17 +114,21 @@ Projects should include:
 ## Implementation Notes
 
 ### NES.css Integration
+
 The project uses NES.css via CDN for authentic 8-bit UI components. Use classes like:
+
 - `nes-btn` for buttons
 - `nes-container` for bordered boxes
 - `is-primary`, `is-success` for variants
 
 ### Performance Considerations
+
 - Image rendering set to `pixelated` for authentic 8-bit look
 - Lazy loading for project images
 - Minimal animation durations (< 500ms)
 
 ### Accessibility
+
 - Maintain WCAG AA contrast ratios
 - Provide keyboard alternatives for all interactions
 - Sound effects default to OFF
@@ -126,6 +137,7 @@ The project uses NES.css via CDN for authentic 8-bit UI components. Use classes 
 ## Future Development Areas
 
 ### Planned Features
+
 1. **Data Layer**: Create `/src/data/` for projects, skills, experience
 2. **Custom Hooks**: Implement `/src/hooks/useKeyboardNavigation.ts`
 3. **Type Definitions**: Add `/src/types/` for project interfaces
@@ -134,6 +146,7 @@ The project uses NES.css via CDN for authentic 8-bit UI components. Use classes 
 6. **Internationalization**: Japanese/English language toggle
 
 ### Content Management
+
 - Projects should be stored as structured data (JSON/YAML)
 - Support for MDX for rich content in project details
 - Automated OG image generation with 8-bit frames
@@ -141,6 +154,7 @@ The project uses NES.css via CDN for authentic 8-bit UI components. Use classes 
 ## Next.js 15 Best Practices
 
 ### App Router Patterns
+
 ```typescript
 // Server Component (default) - for static content
 export default function ProjectsPage() {
@@ -159,11 +173,13 @@ export function KeyboardNavigation() {
 ```
 
 ### Server vs Client Components
+
 - **Server Components** (default): Static content, data fetching, SEO
 - **Client Components** (`"use client"`): User interactions, browser APIs, React hooks
 - **Boundary Pattern**: Keep client components as leaf nodes when possible
 
 ### Data Fetching & Streaming
+
 ```typescript
 // Streaming with Suspense
 import { Suspense } from "react";
@@ -185,6 +201,7 @@ export async function submitContact(formData: FormData) {
 ```
 
 ### Performance Optimization
+
 ```typescript
 // Dynamic imports for code splitting
 const GameComponent = dynamic(() => import("@/components/Game"), {
@@ -207,6 +224,7 @@ import Image from "next/image";
 ## TypeScript Best Practices
 
 ### Strict Configuration (tsconfig.json)
+
 ```json
 {
   "compilerOptions": {
@@ -220,6 +238,7 @@ import Image from "next/image";
 ```
 
 ### Type-Safe Patterns
+
 ```typescript
 // Utility types for project data
 type ProjectBase = {
@@ -235,8 +254,7 @@ type ProjectWithMetrics = ProjectBase & {
 };
 
 // Template literal types for theme colors
-type ThemeColor = 
-  | `--${"background" | "foreground" | "accent" | "success" | "warning" | "error"}`;
+type ThemeColor = `--${"background" | "foreground" | "accent" | "success" | "warning" | "error"}`;
 
 // Generic constraints for components
 interface PixelButtonProps<T extends string = "button"> {
@@ -251,8 +269,8 @@ const projectConfig = {
   categories: ["web", "mobile", "game"] as const,
   filters: {
     tech: ["nextjs", "react", "typescript"],
-    type: ["frontend", "fullstack", "backend"]
-  }
+    type: ["frontend", "fullstack", "backend"],
+  },
 } satisfies {
   maxItems: number;
   categories: readonly string[];
@@ -261,6 +279,7 @@ const projectConfig = {
 ```
 
 ### Component Type Patterns
+
 ```typescript
 // Polymorphic component pattern
 type PolymorphicProps<T extends React.ElementType> = {
@@ -290,6 +309,7 @@ const PixelInput = React.forwardRef<
 ## Code Organization & Architecture
 
 ### File Structure (Enhanced)
+
 ```
 src/
 ├── app/                          # Next.js App Router
@@ -331,6 +351,7 @@ src/
 ```
 
 ### Component Composition
+
 ```typescript
 // Compound component pattern
 const ProjectCard = {
@@ -363,6 +384,7 @@ const ProjectCard = {
 ## Security Best Practices
 
 ### Content Security Policy
+
 ```typescript
 // next.config.js
 const securityHeaders = [
@@ -380,6 +402,7 @@ const securityHeaders = [
 ```
 
 ### Environment Variables
+
 ```typescript
 // lib/env.ts - Type-safe environment variables
 import { z } from "zod";
@@ -395,6 +418,7 @@ export const env = envSchema.parse(process.env);
 ```
 
 ### Server Actions Security
+
 ```typescript
 // Server action with validation
 import { z } from "zod";
@@ -408,17 +432,17 @@ const contactSchema = z.object({
 
 export async function submitContactForm(formData: FormData) {
   "use server";
-  
+
   const result = contactSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
     message: formData.get("message"),
   });
-  
+
   if (!result.success) {
     throw new Error("Invalid form data");
   }
-  
+
   // Process form submission
   await sendEmail(result.data);
   redirect("/contact/success");
@@ -428,6 +452,7 @@ export async function submitContactForm(formData: FormData) {
 ## Code Conventions
 
 ### Component Guidelines
+
 - Use Server Components by default, Client Components only when needed
 - Implement proper TypeScript types for all props
 - Use compound component patterns for complex UI
@@ -435,6 +460,7 @@ export async function submitContactForm(formData: FormData) {
 - Leverage React 19's automatic batching and concurrent features
 
 ### State Management
+
 ```typescript
 // URL state for navigation (recommended)
 import { useSearchParams, useRouter } from "next/navigation";
@@ -442,23 +468,24 @@ import { useSearchParams, useRouter } from "next/navigation";
 function useProjectFilters() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  
+
   const filters = {
     category: searchParams.get("category") || "all",
     tech: searchParams.getAll("tech"),
   };
-  
+
   const updateFilters = (newFilters: Partial<typeof filters>) => {
     const params = new URLSearchParams(searchParams);
     // Update logic
     router.push(`/projects?${params.toString()}`);
   };
-  
+
   return { filters, updateFilters };
 }
 ```
 
 ### Performance Guidelines
+
 - Use `next/dynamic` for code splitting heavy components
 - Implement proper loading states with Suspense
 - Optimize images with `next/image` and appropriate sizing
@@ -466,6 +493,7 @@ function useProjectFilters() {
 - Leverage Partial Prerendering (PPR) for static/dynamic content mix
 
 ### Testing Approach
+
 ```typescript
 // Recommended test setup (when implementing)
 // jest.config.js

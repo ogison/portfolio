@@ -9,8 +9,8 @@ const pressStart2P = Press_Start_2P({
 });
 
 export const metadata: Metadata = {
-  title: "My Portfolio",
-  description: "Retro Famicom-style portfolio",
+  title: "Yusha Name's Portfolio",
+  description: "PORTFOLIO QUEST - RPG風ポートフォリオサイト",
 };
 
 export default function RootLayout({
@@ -21,6 +21,12 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DotGothic16&display=swap"
+          rel="stylesheet"
+        />
         <link rel="stylesheet" href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" />
       </head>
       <body className={`${pressStart2P.variable}`}>{children}</body>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yusha Name's Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DotGothic16&display=swap" rel="stylesheet">
+    <style>
+        /* ゲーム風のカスタムスタイル */
+        body {
+            font-family: 'DotGothic16', sans-serif;
+            background-color: #000;
+            color: #fff;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: -webkit-crisp-edges;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+
+        .font-press-start {
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        .game-container {
+            max-width: 800px;
+            margin: 0 auto;
+            border: 4px solid #fff;
+            padding: 16px;
+            background-color: #000020; /* 深い青 */
+        }
+
+        .window {
+            border: 4px solid #fff;
+            padding: 1rem;
+            background-color: #000020;
+            position: relative;
+        }
+
+        /* ウィンドウの角の装飾 */
+        .window::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            width: 8px;
+            height: 8px;
+            background-color: #000020;
+            box-shadow: 4px 4px 0 #fff;
+        }
+        .window::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 8px;
+            height: 8px;
+            background-color: #000020;
+            box-shadow: -4px 4px 0 #fff;
+        }
+        .window-bottom-left::before {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: -4px;
+            width: 8px;
+            height: 8px;
+            background-color: #000020;
+            box-shadow: 4px -4px 0 #fff;
+        }
+        .window-bottom-right::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            width: 8px;
+            height: 8px;
+            background-color: #000020;
+            box-shadow: -4px -4px 0 #fff;
+        }
+
+        .menu-item {
+            cursor: pointer;
+            position: relative;
+            padding-left: 24px;
+        }
+        
+        .menu-item.active::before {
+            content: '▶';
+            position: absolute;
+            left: 0;
+            top: 0;
+            animation: blink 1s step-end infinite;
+        }
+
+        /* 点滅アニメーション */
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        .progress-bar-container {
+            height: 16px;
+            border: 2px solid #fff;
+            background-color: #333;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #33ff33; /* HPの色 */
+        }
+        .progress-bar.mp {
+            background-color: #3333ff; /* MPの色 */
+        }
+        
+        /* タイプライターエフェクト用のカーソル */
+        .typewriter-cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1.2em;
+            background-color: white;
+            animation: blink 1s step-end infinite;
+            vertical-align: bottom;
+        }
+
+        #start-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            z-index: 9999;
+            transition: opacity 0.5s;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+
+    <!-- スタート画面 -->
+    <div id="start-screen" class="font-press-start">
+        <h1 class="text-2xl sm:text-4xl mb-8 text-center">PORTFOLIO QUEST</h1>
+        <p id="start-text" class="text-lg sm:text-xl animate-pulse">PRESS ENTER KEY</p>
+    </div>
+
+    <div id="main-content" class="game-container hidden">
+        <header class="window mb-4">
+             <div class="flex flex-col sm:flex-row justify-between gap-4">
+                <div>
+                    <p>NAME: Yusha Name</p>
+                    <p>JOB : Web Engineer</p>
+                </div>
+                <div>
+                    <p>LV  : 28</p>
+                </div>
+                <div class="w-full sm:w-1/3">
+                    <div class="flex items-center gap-2">
+                        <span class="w-8">HP</span>
+                        <div class="progress-bar-container w-full">
+                            <div class="progress-bar" style="width: 95%;"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-8">MP</span>
+                        <div class="progress-bar-container w-full">
+                            <div class="progress-bar mp" style="width: 80%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex flex-col md:flex-row gap-4">
+            <!-- 左画面：キャラクターとメニュー -->
+            <div class="md:w-1/2 flex flex-col gap-4">
+                <div class="window flex-grow flex items-center justify-center p-4">
+                    <!-- ドット絵風アバター -->
+                    <div class="w-32 h-32 bg-gray-700 border-4 border-white p-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="w-full h-full" style="image-rendering: pixelated;">
+                            <title>Pixel Art Avatar</title>
+                            <rect width="1" height="1" x="6" y="2" fill="#222"/>
+                            <rect width="1" height="1" x="9" y="2" fill="#222"/>
+                            <rect width="1" height="1" x="5" y="3" fill="#222"/>
+                            <rect width="1" height="1" x="10" y="3" fill="#222"/>
+                            <rect width="1" height="1" x="4" y="4" fill="#222"/>
+                            <rect width="1" height="1" x="11" y="4" fill="#222"/>
+                            <rect width="1" height="1" x="4" y="5" fill="#222"/>
+                            <rect width="1" height="1" x="6" y="5" fill="#fff"/>
+                            <rect width="1" height="1" x="9" y="5" fill="#fff"/>
+                            <rect width="1" height="1" x="11" y="5" fill="#222"/>
+                            <rect width="1" height="1" x="4"  y="6" fill="#222"/>
+                            <rect width="1" height="1" x="5" y="6" fill="#ddc9a3"/>
+                            <rect width="1" height="1" x="6" y="6" fill="#222"/>
+                            <rect width="1" height="1" x="7" y="6" fill="#222"/>
+                            <rect width="1" height="1" x="8" y="6" fill="#222"/>
+                            <rect width="1" height="1" x="9" y="6" fill="#222"/>
+                            <rect width="1" height="1" x="10" y="6" fill="#ddc9a3"/>
+                            <rect width="1" height="1" x="11" y="6" fill="#222"/>
+                            <rect width="1" height="1" x="3" y="7" fill="#222"/><rect width="1" height="1" x="12" y="7" fill="#222"/>
+                            <rect width="1" height="1" x="4" y="7" fill="#ddc9a3"/><rect width="1" height="1" x="5" y="7" fill="#ddc9a3"/><rect width="1" height="1" x="6" y="7" fill="#ddc9a3"/><rect width="1" height="1" x="7" y="7" fill="#ddc9a3"/><rect width="1" height="1" x="8" y="7" fill="#ddc9a3"/><rect width="1" height="1" x="9" y="7" fill="#ddc9a3"/><rect width="1" height="1" x="10" y="7" fill="#ddc9a3"/><rect width="1" height="1" x="11" y="7" fill="#ddc9a3"/>
+                            <rect width="1" height="1" x="5" y="8" fill="#ddc9a3"/><rect width="1" height="1" x="6" y="8" fill="#ddc9a3"/><rect width="1" height="1" x="7" y="8" fill="#ddc9a3"/><rect width="1" height="1" x="8" y="8" fill="#ddc9a3"/><rect width="1" height="1" x="9" y="8" fill="#ddc9a3"/><rect width="1" height="1" x="10" y="8" fill="#ddc9a3"/>
+                            <rect width="1" height="1" x="6" y="9" fill="#ddc9a3"/><rect width="1" height="1" x="7" y="9" fill="#ddc9a3"/><rect width="1" height="1" x="8" y="9" fill="#ddc9a3"/><rect width="1" height="1" x="9" y="9" fill="#ddc9a3"/>
+                            <rect width="1" height="1" x="7" y="10" fill="#ddc9a3"/><rect width="1" height="1" x="8" y="10" fill="#ddc9a3"/>
+                        </svg>
+                    </div>
+                </div>
+                <div id="command-menu" class="window window-bottom-left window-bottom-right">
+                    <div class="grid grid-cols-2 gap-2 text-lg">
+                        <div class="menu-item active" data-target="about">はなす</div>
+                        <div class="menu-item" data-target="skills">じゅもん</div>
+                        <div class="menu-item" data-target="works">どうぐ</div>
+                        <div class="menu-item" data-target="contact">いのる</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右画面：メッセージウィンドウ -->
+            <div class="md:w-1/2 window window-bottom-left window-bottom-right flex flex-col">
+                <div id="message-window" class="flex-grow h-64 overflow-y-auto">
+                    <p id="message-text" class="text-lg leading-relaxed"></p>
+                </div>
+                <div class="text-right text-2xl animate-bounce">▼</div>
+            </div>
+        </main>
+    </div>
+    
+    <audio id="select-sound" src="https://cdn.jsdelivr.net/gh/dev-neko/pixel-game-sounds/sounds/select.wav" preload="auto"></audio>
+    <audio id="confirm-sound" src="https://cdn.jsdelivr.net/gh/dev-neko/pixel-game-sounds/sounds/confirm.wav" preload="auto"></audio>
+    <audio id="start-sound" src="https://cdn.jsdelivr.net/gh/dev-neko/pixel-game-sounds/sounds/jingle.wav" preload="auto"></audio>
+
+    <script>
+        const menuItems = document.querySelectorAll('.menu-item');
+        const messageText = document.getElementById('message-text');
+        const selectSound = document.getElementById('select-sound');
+        const confirmSound = document.getElementById('confirm-sound');
+        const startSound = document.getElementById('start-sound');
+        const startScreen = document.getElementById('start-screen');
+        const mainContent = document.getElementById('main-content');
+        
+        // メッセージコンテンツ
+        const messages = {
+            about: "ゆうしゃ Name は なかまに なりたそうに こちらを みている！\n\n都内で働くWebエンジニアです。面白い技術とおいしいコーヒーが好きです。フロントエンドからバックエンドまで、冒険の仲間を募集しています！",
+            skills: "ゆうしゃは かずかずの じゅもんを おぼえた！\n\nメラ：HTML\nギラ：CSS\nヒャド：JavaScript\nイオ：React/Vue\nライデイン：Node.js\nベホイミ：Git/GitHub\nルーラ：AWS",
+            works: "これまでに てにいれた どうぐの いちらんだ。\n\n・伝説の剣(ポートフォリオ)\n・賢者の石(ブログ)\n・王者の盾(〇〇社でのプロジェクト)",
+            contact: "てんのおつげを ききますか？\n\n・ほうしの とまりぎ (GitHub)\n・たびびとの さかば (X/Twitter)\n・てんしへの いのり (Email)",
+        };
+
+        let activeMenuIndex = 0;
+        let isTyping = false;
+
+        // タイプライターエフェクト
+        function typeWriter(text, i) {
+            isTyping = true;
+            if (i < text.length) {
+                // 改行は<br>タグに変換
+                if (text.charAt(i) === '\n') {
+                    messageText.innerHTML += '<br>';
+                } else {
+                    messageText.innerHTML += text.charAt(i);
+                }
+                i++;
+                setTimeout(() => typeWriter(text, i), 50);
+            } else {
+                messageText.innerHTML += '<span class="typewriter-cursor"></span>';
+                isTyping = false;
+            }
+        }
+        
+        // メッセージを更新
+        function updateMessage(targetId) {
+            if (isTyping) return;
+            messageText.innerHTML = '';
+            const text = messages[targetId];
+            typeWriter(text, 0);
+            confirmSound.currentTime = 0;
+            confirmSound.play();
+        }
+
+        // メニューの選択状態を更新
+        function updateMenuSelection() {
+             menuItems.forEach((item, index) => {
+                if (index === activeMenuIndex) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+        
+        // キーボード操作
+        document.addEventListener('keydown', (e) => {
+            if (startScreen.style.opacity === '0') {
+                 // メインコンテンツ表示後の操作
+                if (isTyping) return;
+
+                const colCount = 2; // メニューの列数
+                switch(e.key) {
+                    case 'ArrowUp':
+                        activeMenuIndex = (activeMenuIndex - colCount + menuItems.length) % menuItems.length;
+                        playSelectSound();
+                        break;
+                    case 'ArrowDown':
+                        activeMenuIndex = (activeMenuIndex + colCount) % menuItems.length;
+                        playSelectSound();
+                        break;
+                    case 'ArrowLeft':
+                        if(activeMenuIndex % colCount !== 0) {
+                            activeMenuIndex--;
+                        }
+                        playSelectSound();
+                        break;
+                    case 'ArrowRight':
+                         if(activeMenuIndex % colCount !== colCount - 1) {
+                            activeMenuIndex++;
+                        }
+                        playSelectSound();
+                        break;
+                    case 'Enter':
+                    case ' ':
+                        const targetId = menuItems[activeMenuIndex].dataset.target;
+                        updateMessage(targetId);
+                        break;
+                }
+                updateMenuSelection();
+            } else {
+                // スタート画面での操作
+                if(e.key === 'Enter') {
+                    startGame();
+                }
+            }
+        });
+        
+        // マウスクリック操作
+        menuItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                if (isTyping) return;
+                activeMenuIndex = index;
+                updateMenuSelection();
+                const targetId = item.dataset.target;
+                updateMessage(targetId);
+            });
+        });
+
+        function playSelectSound() {
+            selectSound.currentTime = 0;
+            selectSound.play();
+        }
+
+        function startGame() {
+             startScreen.style.opacity = '0';
+             startSound.play();
+             setTimeout(() => {
+                startScreen.style.display = 'none';
+                mainContent.classList.remove('hidden');
+                // 初期メッセージを表示
+                updateMessage('about');
+             }, 500);
+        }
+
+        // スマホ向けにスタートテキストをクリック可能にする
+        document.getElementById('start-text').addEventListener('click', startGame);
+
+        // 初期化
+        updateMenuSelection();
+    </script>
+</body>
+</html>
