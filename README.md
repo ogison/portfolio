@@ -8,7 +8,7 @@ A retro gaming-inspired portfolio website built with Next.js 15, featuring an 8-
 
 ## URL
 
-🚧 Coming soon
+https://portfolio-ogison.vercel.app/
 
 ## Installation
 
