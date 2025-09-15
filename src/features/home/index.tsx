@@ -20,6 +20,7 @@ export default function Home() {
   const [selectedMenuItem, setSelectedMenuItem] = useState<MenuItem>("welcome");
   const [startScreenOpacity, setStartScreenOpacity] = useState(1);
   const [isTyping, setIsTyping] = useState(false);
+  const [menuSelectKey, setMenuSelectKey] = useState(0);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -40,6 +41,8 @@ export default function Home() {
   };
 
   const handleMenuSelect = (item: MenuItem) => {
+    // 連続選択を確実に動作させるため、キーを更新して強制的に再レンダリングを促す
+    setMenuSelectKey((prev) => prev + 1);
     setSelectedMenuItem(item);
     // 選択されたアイテムのインデックスを取得してactiveMenuIndexも更新
     const itemIndex = menuItems.findIndex((menuItem) => menuItem.id === item);
@@ -76,7 +79,11 @@ export default function Home() {
           />
         </div>
         <div>
-          <MessageWindow selectedMenuItem={selectedMenuItem} onTypingChange={setIsTyping} />
+          <MessageWindow
+            selectedMenuItem={selectedMenuItem}
+            onTypingChange={setIsTyping}
+            key={menuSelectKey}
+          />
         </div>
       </main>
     </div>
