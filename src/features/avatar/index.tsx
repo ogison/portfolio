@@ -26,7 +26,7 @@ export default function PixelAvatar({ isTyping = false }: PixelAvatarProps) {
   const imageSrc = currentImage === 0 ? "/images/avatar.png" : "/images/avatar_2.png";
 
   return (
-    <div className="w-60 h-60  p-1">
+    <div className="w-32 h-32 sm:w-48 sm:h-48 md:w-60 md:h-60 p-1">
       <Image
         src={imageSrc}
         alt="Pixel Art Avatar"
