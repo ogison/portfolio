@@ -6,6 +6,7 @@ import GameHeader from "@/features/header";
 import PixelAvatar from "@/features/avatar";
 import MenuGrid, { type MenuItem } from "@/features/menu";
 import MessageWindow from "@/features/message";
+import styles from "./home.module.scss";
 
 const menuItems = [
   { id: "about" as MenuItem, label: "はなす" },
@@ -64,11 +65,11 @@ export default function Home() {
   }
 
   return (
-    <div className="game-container">
+    <div className={styles.gameContainer}>
       <GameHeader />
-      <main className="flex flex-col lg:flex-row gap-4 flex-1">
-        <div className="flex flex-col gap-4">
-          <div className="window flex-grow flex items-center justify-center p-4">
+      <main>
+        <div className={styles.panel}>
+          <div className={styles.window}>
             <PixelAvatar isTyping={isTyping} />
           </div>
           <MenuGrid
@@ -78,7 +79,7 @@ export default function Home() {
             menuItems={menuItems}
           />
         </div>
-        <div>
+        <div className={styles.messageContainer}>
           <MessageWindow
             selectedMenuItem={selectedMenuItem}
             onTypingChange={setIsTyping}

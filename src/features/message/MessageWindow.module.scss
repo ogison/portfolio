@@ -7,52 +7,52 @@
   flex-direction: column;
   flex: 1;
 
-  // Window corner decorations
+  // Window corner decorations (inside container)
   &::before {
     content: "";
     position: absolute;
-    top: -4px;
-    left: -4px;
+    top: 0px;
+    left: 0px;
     width: 8px;
     height: 8px;
     background-color: var(--background);
-    box-shadow: 4px 4px 0 #fff;
+    box-shadow: 0px 0px 0 #fff;
   }
 
   &::after {
     content: "";
     position: absolute;
-    top: -4px;
-    right: -4px;
+    top: 0px;
+    right: 0px;
     width: 8px;
     height: 8px;
     background-color: var(--background);
-    box-shadow: -4px 4px 0 #fff;
+    box-shadow: 0px 0px 0 #fff;
   }
 
-  // Bottom corners
+  // Bottom corners (inside container)
   &.bottomCorners {
     &::before {
       content: "";
       position: absolute;
-      bottom: -4px;
-      left: -4px;
+      bottom: 0px;
+      left: 0px;
       width: 8px;
       height: 8px;
       background-color: var(--background);
-      box-shadow: 4px -4px 0 #fff;
+      box-shadow: 0px 0px 0 #fff;
       top: auto;
     }
 
     &::after {
       content: "";
       position: absolute;
-      bottom: -4px;
-      right: -4px;
+      bottom: 0px;
+      right: 0px;
       width: 8px;
       height: 8px;
       background-color: var(--background);
-      box-shadow: -4px -4px 0 #fff;
+      box-shadow: 0px 0px 0 #fff;
       top: auto;
     }
   }
