@@ -1,9 +1,13 @@
 // メニューウィンドウのスタイル
 .container {
   border: 4px solid #fff;
-  padding: 1rem;
+  padding: 0.5rem;
   background-color: var(--background);
   position: relative;
+
+  @media (min-width: 640px) {
+    padding: 1rem;
+  }
 
   // Top corners
   &::before {
@@ -59,10 +63,16 @@
 // メニューグリッド
 .menuGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 0.5rem;
-  font-size: 1.125rem;
-  line-height: 1.75rem;
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
 }
 
 // メニューアイテム
@@ -70,7 +80,11 @@
   cursor: pointer;
   position: relative;
   padding-left: 1.5rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
   transition: color 0.2s;
+  white-space: normal;
+  word-break: break-word;
 
   &:hover {
     color: var(--accent);
