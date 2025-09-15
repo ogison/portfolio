@@ -49,66 +49,8 @@ body {
   font-family: var(--font-press-start-2p), cursive;
 }
 
-.game-container {
-  width: 100%;
-  max-width: 1200px;
-  height: 100vh;
-  border: 4px solid #fff;
-  padding: 16px;
-  background-color: var(--background);
-  display: flex;
-  flex-direction: column;
-  margin: 0 auto;
-}
-
-.progress-bar-container {
-  height: 16px;
-  border: 2px solid #fff;
-  background-color: #333;
-}
-
-.progress-bar {
-  height: 100%;
-  background-color: var(--success);
-  transition: width 0.3s ease;
-}
-
-.progress-bar.mp {
-  background-color: var(--info);
-}
-
-.typewriter-cursor {
-  display: inline-block;
-  width: 10px;
-  height: 1.2em;
-  background-color: white;
-  animation: blink 1s step-end infinite;
-  vertical-align: bottom;
-}
-
 @keyframes blink {
   50% {
     opacity: 0;
   }
-}
-
-#start-screen {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #000;
-  z-index: 9999;
-  transition: opacity 0.5s;
-}
-
-#start-screen > div {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 16px;
 }

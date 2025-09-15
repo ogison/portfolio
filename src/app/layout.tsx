@@ -9,8 +9,8 @@ const pressStart2P = Press_Start_2P({
 });
 
 export const metadata: Metadata = {
-  title: "Yusha Name's Portfolio",
-  description: "PORTFOLIO QUEST - RPG風ポートフォリオサイト",
+  title: "Portfolio ogison",
+  description: "PORTFOLIO OGISON",
 };
 
 export default function RootLayout({
