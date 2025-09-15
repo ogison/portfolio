@@ -19,17 +19,14 @@ interface UseSoundReturn {
 
 const SOUND_ENABLED_KEY = "portfolio-sound-enabled";
 
-export function useSound(
-  src: string | null,
-  options: UseSoundOptions = {}
-): UseSoundReturn {
+export function useSound(src: string | null, options: UseSoundOptions = {}): UseSoundReturn {
   const { volume = 0.5, loop = false, preload = true } = options;
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   // 初期値をlocalStorageから直接読み込む
   const [isMuted, setIsMuted] = useState(() => {
-    if (typeof window === 'undefined') return false;
+    if (typeof window === "undefined") return false;
     const savedSoundEnabled = localStorage.getItem(SOUND_ENABLED_KEY);
     return savedSoundEnabled === "false";
   });
@@ -146,7 +143,7 @@ export function useSound(
 export function useSoundSettings() {
   // 初期値をlocalStorageから直接読み込む
   const [soundEnabled, setSoundEnabled] = useState(() => {
-    if (typeof window === 'undefined') return true;
+    if (typeof window === "undefined") return true;
     const saved = localStorage.getItem(SOUND_ENABLED_KEY);
     return saved !== "false"; // デフォルトはtrue
   });
