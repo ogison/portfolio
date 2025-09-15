@@ -11,6 +11,21 @@ interface MessageWindowProps {
   onTypingChange?: (isTyping: boolean) => void;
 }
 
+// メッセージ量に応じて表示スピードを動的に計算
+const calculateTypingSpeed = (messageLength: number): number => {
+  const baseSpeed = 20; // 最遅スピード（ms）- 高速化
+  const fastSpeed = 10; // 最速スピード（ms）
+  const threshold = 300; // 調整開始の文字数
+
+  if (messageLength <= threshold) {
+    return baseSpeed;
+  }
+
+  // 線形に速度を上げる（文字数が多いほど早く）
+  const speedReduction = Math.min((messageLength - threshold) / 200, 1);
+  return Math.max(fastSpeed, baseSpeed - (baseSpeed - fastSpeed) * speedReduction);
+};
+
 const messages = {
   welcome:
     "おや？ 旅人よ、ようこそ 我が館へ！\n" +
@@ -142,6 +157,10 @@ export default function MessageWindow({ selectedMenuItem, onTypingChange }: Mess
     } else {
       message = messages[selectedMenuItem] as string;
     }
+
+    // メッセージ長に基づいて動的にタイピングスピードを計算
+    const typingSpeed = calculateTypingSpeed(message.length);
+
     setDisplayedText("");
     setShowCursor(false);
     setIsTypingComplete(false);
@@ -181,7 +200,7 @@ export default function MessageWindow({ selectedMenuItem, onTypingChange }: Mess
         onTypingChange?.(false);
         clearInterval(typeInterval);
       }
-    }, 25);
+    }, typingSpeed);
 
     return () => {
       clearInterval(typeInterval);
