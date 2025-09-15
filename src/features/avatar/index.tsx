@@ -23,7 +23,7 @@ export default function PixelAvatar({ isTyping = false }: PixelAvatarProps) {
     return () => clearInterval(interval);
   }, [isTyping]);
 
-  const imageSrc = currentImage === 0 ? "/avatar.png" : "/avatar_2.png";
+  const imageSrc = currentImage === 0 ? "/images/avatar.png" : "/images/avatar_2.png";
 
   return (
     <div className="w-60 h-60 bg-gray-700 border-4 border-white p-1">

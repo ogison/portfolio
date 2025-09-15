@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { MenuItem } from "../menu";
 import styles from "./MessageWindow.module.scss";
 import { formatContactText, formatWorksText } from "@/features/message/contactUtils";
+import { useSound, useSoundSettings } from "@/features/message/useSound";
 
 interface MessageWindowProps {
   selectedMenuItem: MenuItem;
@@ -124,6 +125,12 @@ export default function MessageWindow({ selectedMenuItem, onTypingChange }: Mess
   const [showCursor, setShowCursor] = useState(false);
   const [isTypingComplete, setIsTypingComplete] = useState(false);
 
+  const { soundEnabled } = useSoundSettings();
+  const typeSound = useSound("/sounds/message-type.mp3", {
+    volume: 0.3,
+    preload: true,
+  });
+
   useEffect(() => {
     let message: string;
 
@@ -141,11 +148,34 @@ export default function MessageWindow({ selectedMenuItem, onTypingChange }: Mess
     onTypingChange?.(true);
 
     let currentIndex = 0;
+    let lastSoundTime = 0;
+    const soundInterval = 100;
+
+    if (soundEnabled) {
+      typeSound.play();
+    }
+
     const typeInterval = setInterval(() => {
       if (currentIndex < message.length) {
         setDisplayedText(message.slice(0, currentIndex + 1));
+
+        const currentTime = Date.now();
+        if (
+          soundEnabled &&
+          currentTime - lastSoundTime > soundInterval &&
+          message[currentIndex] !== "\n" &&
+          message[currentIndex] !== " "
+        ) {
+          typeSound.stop();
+          typeSound.play();
+          lastSoundTime = currentTime;
+        }
+
         currentIndex++;
       } else {
+        if (soundEnabled) {
+          typeSound.stop();
+        }
         setShowCursor(true);
         setIsTypingComplete(true);
         onTypingChange?.(false);
@@ -155,9 +185,10 @@ export default function MessageWindow({ selectedMenuItem, onTypingChange }: Mess
 
     return () => {
       clearInterval(typeInterval);
+      typeSound.stop();
       onTypingChange?.(false);
     };
-  }, [selectedMenuItem, onTypingChange]);
+  }, [selectedMenuItem, onTypingChange, soundEnabled]);
 
   const formatText = (text: string) => {
     if (selectedMenuItem === "contact") {
