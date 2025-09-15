@@ -1,4 +1,7 @@
+"use client";
+
 import styles from "./GameHeader.module.scss";
+import SoundToggle from "@/components/SoundToggle";
 
 interface GameHeaderProps {
   name?: string;
@@ -44,6 +47,9 @@ export default function GameHeader({
               ></div>
             </div>
           </div>
+        </div>
+        <div className={styles.settingsSection}>
+          <SoundToggle />
         </div>
       </div>
     </header>
