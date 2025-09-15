@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import styles from "./GameHeader.module.scss";
 import SoundToggle from "@/components/SoundToggle";
 
@@ -14,10 +15,24 @@ interface GameHeaderProps {
 export default function GameHeader({
   name = "ogison",
   job = "Web Engineer",
-  level = 28,
-  hp = 95,
-  mp = 80,
+  level: initialLevel,
+  hp: initialHp,
+  mp: initialMp,
 }: GameHeaderProps) {
+  const [level, setLevel] = useState<number>(initialLevel ?? 28);
+  const [hp, setHp] = useState<number>(initialHp ?? 95);
+  const [mp, setMp] = useState<number>(initialMp ?? 80);
+
+  useEffect(() => {
+    // Generate random values on mount (client-side only)
+    const randomLevel = Math.floor(Math.random() * 50) + 10; // Random level between 10-59
+    const randomHp = Math.floor(Math.random() * 60) + 40; // Random HP between 40-99
+    const randomMp = Math.floor(Math.random() * 80) + 20; // Random MP between 20-99
+    
+    setLevel(randomLevel);
+    setHp(randomHp);
+    setMp(randomMp);
+  }, []);
   return (
     <header className={styles.header}>
       <div className={styles.content}>
