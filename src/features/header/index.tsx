@@ -28,7 +28,7 @@ export default function GameHeader({
     const randomLevel = Math.floor(Math.random() * 50) + 10; // Random level between 10-59
     const randomHp = Math.floor(Math.random() * 60) + 40; // Random HP between 40-99
     const randomMp = Math.floor(Math.random() * 80) + 20; // Random MP between 20-99
-    
+
     setLevel(randomLevel);
     setHp(randomHp);
     setMp(randomMp);
