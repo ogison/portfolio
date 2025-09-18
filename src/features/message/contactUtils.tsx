@@ -7,7 +7,7 @@ export const contactLinks = {
 };
 
 export const worksLinks = {
-  "ogison の館（ポートフォリオ）": "https://ogison-portfolio.vercel.app/",
+  "ogison の館（ポートフォリオ）": "https://portfolio-ogison.vercel.app/",
   "PLAYLISTER X": "https://playlister-x.vercel.app/",
   "AI Selector": "https://gemini-selection.vercel.app/home",
 };
