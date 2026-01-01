@@ -14,7 +14,7 @@ interface GameHeaderProps {
 
 export default function GameHeader({
   name = "ogison",
-  job = "Web Engineer",
+  job = "Product Developer",
   level: initialLevel,
   hp: initialHp,
   mp: initialMp,
