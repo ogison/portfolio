@@ -117,7 +117,7 @@ const createIconSVG = (size) => {
   ).join('\n');
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-  <rect width="${size}" height="${size}" fill="#1a1a1a"/>
+  <rect width="${size}" height="${size}" fill="#000000"/>
   ${rects}
 </svg>`;
 };
