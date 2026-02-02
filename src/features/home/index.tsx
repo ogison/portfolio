@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import StartScreen from "@/components/StartScreen";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import GameHeader from "@/features/header";
 import PixelAvatar from "@/features/avatar";
 import MenuGrid, { type MenuItem } from "@/features/menu";
@@ -16,32 +16,17 @@ const menuItems = [
 ];
 
 export default function Home() {
-  const [gameStarted, setGameStarted] = useState(false);
   const [activeMenuIndex, setActiveMenuIndex] = useState(0);
   const [selectedMenuItem, setSelectedMenuItem] = useState<MenuItem>("welcome");
-  const [startScreenOpacity, setStartScreenOpacity] = useState(1);
   const [isTyping, setIsTyping] = useState(false);
   const [menuSelectKey, setMenuSelectKey] = useState(0);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!gameStarted && e.key === "Enter") {
-        startGame();
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [gameStarted]);
-
-  const startGame = () => {
-    setStartScreenOpacity(0);
-    setTimeout(() => {
-      setGameStarted(true);
-    }, 500);
-  };
+  const router = useRouter();
 
   const handleMenuSelect = (item: MenuItem) => {
+    if (item === "works") {
+      router.push("/shop");
+      return;
+    }
     // 連続選択を確実に動作させるため、キーを更新して強制的に再レンダリングを促す
     setMenuSelectKey((prev) => prev + 1);
     setSelectedMenuItem(item);
@@ -55,14 +40,6 @@ export default function Home() {
   const handleMenuChange = (index: number) => {
     setActiveMenuIndex(index);
   };
-
-  if (!gameStarted) {
-    return (
-      <div style={{ opacity: startScreenOpacity }}>
-        <StartScreen onStart={startGame} />
-      </div>
-    );
-  }
 
   return (
     <div className={styles.gameContainer}>
