@@ -9,6 +9,8 @@ import { useSound, useSoundSettings } from "@/features/message/useSound";
 interface MessageWindowProps {
   selectedMenuItem: MenuItem;
   onTypingChange?: (isTyping: boolean) => void;
+  customMessage?: string;
+  plainTextOnly?: boolean;
 }
 
 // メッセージ量に応じて表示スピードを動的に計算
@@ -30,7 +32,7 @@ const messages = {
   welcome:
     "おや？ 旅人よ、ようこそ 我が館へ！\n" +
     "ここでは ogison の ひみつを 少しばかり のぞくことができるんだ。\n\n" +
-    "・展示された宝（作品）\n" +
+    "・ショップ（作品）\n" +
     "・封印の書物（スキル） \n" +
     "・旅人へのしるべ（コンタクト）\n\n" +
     "さあ、どれを 見てみるかい？",
@@ -92,16 +94,11 @@ const messages = {
     "・Redmine —— 記録を刻む 古き石板\n\n" +
     "さあ、どの力や道具を 見てみるかい？",
   works:
-    "展示された宝の もくろくだ。\n\n" +
-    "【ogison の館（ポートフォリオ）】\n" +
-    "→ ウーパールーパーの館主がおくる、冒険のしるべとなる館。\n" +
-    "　技術・作品・物語が すべてこの場所に つどっている。\n\n" +
-    "【PLAYLISTER X】\n" +
-    "→ Spotify のちからで プレイリストを つくる道具。\n" +
-    "　※ APIの都合により、作成は さくしゃ本人のみ 可能だ。\n\n" +
-    "【AI Selector】\n" +
-    "→ 生成AI（Gemini）が 選択肢から ひとつを えらんでくれる占い箱。\n" +
-    "　AIの独断と偏見で けつだんを 下してくれるぞ。",
+    "ようこそ、作品ショップへ。\n\n" +
+    "ここには 旅の途中で うみだした宝が ならんでいる。\n" +
+    "気になる品をえらぶと、プレビューと説明が あらわれるよ。\n" +
+    "リンクをひらけば、実際の作品の世界へ すすむこともできる。\n\n" +
+    "さあ、好きなものを選んでみてね。",
   contact:
     "やあ、ここまで来てくれてありがとう。\n" +
     "外の世界で また会えるように\n" +
@@ -112,7 +109,12 @@ const messages = {
     "さあ、好きな場所で 声をかけてくれ。",
 };
 
-export default function MessageWindow({ selectedMenuItem, onTypingChange }: MessageWindowProps) {
+export default function MessageWindow({
+  selectedMenuItem,
+  onTypingChange,
+  customMessage,
+  plainTextOnly = false,
+}: MessageWindowProps) {
   const [displayedText, setDisplayedText] = useState("");
   const [showCursor, setShowCursor] = useState(false);
   const [isTypingComplete, setIsTypingComplete] = useState(false);
@@ -126,7 +128,9 @@ export default function MessageWindow({ selectedMenuItem, onTypingChange }: Mess
   useEffect(() => {
     let message: string;
 
-    if (selectedMenuItem === "about") {
+    if (customMessage !== undefined) {
+      message = customMessage;
+    } else if (selectedMenuItem === "about") {
       // aboutの場合はランダムに選択
       const aboutMessages = messages.about;
       const randomIndex = Math.floor(Math.random() * aboutMessages.length);
@@ -184,9 +188,20 @@ export default function MessageWindow({ selectedMenuItem, onTypingChange }: Mess
       typeSound.stop();
       onTypingChange?.(false);
     };
-  }, [selectedMenuItem, onTypingChange, soundEnabled]);
+  }, [customMessage, selectedMenuItem, onTypingChange, soundEnabled]);
 
   const formatText = (text: string) => {
+    const lines = text.split("\n");
+
+    if (plainTextOnly || customMessage !== undefined) {
+      return lines.map((line, index) => (
+        <span key={index}>
+          {line}
+          {index < lines.length - 1 && <br />}
+        </span>
+      ));
+    }
+
     if (selectedMenuItem === "contact") {
       return formatContactText(text, isTypingComplete, styles.link);
     }
@@ -195,10 +210,10 @@ export default function MessageWindow({ selectedMenuItem, onTypingChange }: Mess
       return formatWorksText(text, isTypingComplete, styles.link);
     }
 
-    return text.split("\n").map((line, index) => (
+    return lines.map((line, index) => (
       <span key={index}>
         {line}
-        {index < text.split("\n").length - 1 && <br />}
+        {index < lines.length - 1 && <br />}
       </span>
     ));
   };
