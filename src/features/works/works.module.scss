@@ -1,0 +1,241 @@
+﻿.container {
+  background-color: var(--background);
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 640px;
+
+  @media (min-width: 640px) {
+    padding: 1rem;
+    min-height: 420px;
+  }
+}
+
+.content {
+  display: grid;
+  gap: 0.75rem;
+
+  @media (min-width: 840px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    align-items: stretch;
+  }
+}
+
+.listPanel {
+  border: 2px solid #fff;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 360px;
+  outline: none;
+
+  &:focus {
+    border-color: #fff;
+  }
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.listItem {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.35rem 0.4rem;
+  position: relative;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+
+  &:hover {
+    color: #fff !important;
+  }
+}
+
+.active::before {
+  content: ">";
+  position: absolute;
+  left: -0.75rem;
+  color: #fff !important;
+  animation: blink 1s step-end infinite;
+}
+
+.selected {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.itemName {
+  flex: 1;
+  font-size: 0.8rem;
+
+  @media (min-width: 640px) {
+    font-size: 0.95rem;
+  }
+}
+
+.itemPrice {
+  color: #ffc857 !important;
+  font-size: 0.75rem;
+  white-space: nowrap;
+
+  @media (min-width: 640px) {
+    font-size: 0.9rem;
+  }
+}
+
+.listFooter {
+  font-size: 0.7rem;
+  color: #ffc857 !important;
+}
+
+.listBottomRow {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.listCommand {
+  text-align: left;
+  font-size: 0.7rem;
+  opacity: 0.8;
+}
+
+.detailPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 360px;
+}
+
+.previewFrame {
+  border: 2px solid var(--success);
+  min-height: 360px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.75rem;
+}
+
+.previewEmpty {
+  opacity: 0.6;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+}
+
+.previewContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  align-items: center;
+}
+
+.previewIcon {
+  width: 240px;
+  height: 240px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.previewLinkRow {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.75rem;
+}
+
+.previewLinkPlaceholder {
+  opacity: 0.6;
+}
+
+.previewStack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+}
+
+.stackChip {
+  border: 1px solid #fff;
+  padding: 0.2rem 0.35rem;
+  font-size: 0.65rem;
+}
+
+.detailBox {
+  border: 2px solid #fff;
+  padding: 0.75rem;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.detailTitle {
+  color: var(--success) !important;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+}
+
+.detailBody {
+  font-size: 0.75rem;
+  line-height: 1.5;
+
+  p {
+    margin: 0 0 0.5rem;
+  }
+}
+
+.link {
+  color: var(--accent) !important;
+  text-decoration: none;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 2px;
+    background-color: var(--accent);
+    animation: linkBlink 1s step-end infinite;
+  }
+
+  &:hover {
+    background-color: var(--accent);
+    color: var(--background) !important;
+    padding: 0 0.25rem;
+    margin: 0 -0.25rem;
+  }
+}
+
+.focusHint {
+  font-size: 0.65rem;
+  opacity: 0.6;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes linkBlink {
+  50% {
+    opacity: 0;
+  }
+}
