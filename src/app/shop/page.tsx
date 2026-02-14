@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import WorksPageContent from "./WorksPageContent";
+import WorksPageContent from "@/features/shop/WorksPageContent";
 
 export const metadata: Metadata = {
   title: "Works - Portfolio ogison",

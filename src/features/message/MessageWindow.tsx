@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { MenuItem } from "../menu";
+import type { MenuItem } from "../menu/MenuGrid";
 import styles from "./MessageWindow.module.scss";
 import { formatContactText, formatWorksText } from "@/features/message/contactUtils";
 import { useSound, useSoundSettings } from "@/features/message/useSound";

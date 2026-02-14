@@ -35,6 +35,26 @@
   }
 }
 
+.cornerBottomLeft,
+.cornerBottomRight {
+  position: absolute;
+  bottom: -4px;
+  width: 8px;
+  height: 8px;
+  background-color: var(--background);
+  pointer-events: none;
+}
+
+.cornerBottomLeft {
+  left: -4px;
+  box-shadow: 4px -4px 0 #fff;
+}
+
+.cornerBottomRight {
+  right: -4px;
+  box-shadow: -4px -4px 0 #fff;
+}
+
 .content {
   display: flex;
   flex-direction: column;
