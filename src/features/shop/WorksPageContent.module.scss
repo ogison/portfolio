@@ -26,6 +26,31 @@
   overflow: auto;
 }
 
+.backButtonRow {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.backButton {
+  display: inline-block;
+  border: 2px solid #ffffff;
+  padding: 0.4rem 0.75rem;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 0.875rem;
+  line-height: 1;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.backButton:hover,
+.backButton:focus,
+.backButton:focus-visible {
+  background-color: #ffffff;
+  color: #000000 !important;
+}
+
 .showcase {
   flex: 0 0 auto;
   min-height: 0;

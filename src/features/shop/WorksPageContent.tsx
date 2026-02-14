@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import GameHeader from "@/features/header";
-import MessageWindow from "@/features/message";
-import WorksShowcase, { type WorkItem } from "@/features/works";
+import Link from "next/link";
+import GameHeader from "@/features/header/GameHeader";
+import MessageWindow from "@/features/message/MessageWindow";
+import WorksShowcase, { type WorkItem } from "@/features/shop/WorksShowcase";
 import styles from "./WorksPageContent.module.scss";
 
 export default function WorksPageContent() {
@@ -13,6 +14,11 @@ export default function WorksPageContent() {
     <div className={styles.gameContainer}>
       <GameHeader />
       <main className={styles.main}>
+        <div className={styles.backButtonRow}>
+          <Link href="/home" className={styles.backButton}>
+            BACK TO HOME
+          </Link>
+        </div>
         <section className={styles.showcase}>
           <WorksShowcase onSelectedWorkChange={setSelectedWork} />
         </section>

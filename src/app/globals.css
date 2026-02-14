@@ -62,7 +62,9 @@ body {
   *,
   *::before,
   *::after {
-    cursor: url("/cursors/famicom-cursor.svg") 1 1, default !important;
+    cursor:
+      url("/cursors/famicom-cursor.svg") 1 1,
+      default !important;
   }
 
   a,
@@ -74,6 +76,8 @@ body {
   label[for],
   select,
   summary {
-    cursor: url("/cursors/famicom-pointer.svg") 20 3, pointer !important;
+    cursor:
+      url("/cursors/famicom-pointer.svg") 20 3,
+      pointer !important;
   }
 }

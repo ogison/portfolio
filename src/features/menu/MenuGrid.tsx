@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import styles from "./menu.module.scss";
+import styles from "./MenuGrid.module.scss";
 
 export type MenuItem = "welcome" | "about" | "skills" | "works" | "contact";
 
@@ -57,7 +57,9 @@ export default function MenuGrid({
 
   if (!mounted) {
     return (
-      <div className={`${styles.container} ${styles.bottomCorners}`}>
+      <div className={styles.container}>
+        <span className={styles.cornerBottomLeft} aria-hidden="true"></span>
+        <span className={styles.cornerBottomRight} aria-hidden="true"></span>
         <div className={styles.menuGrid}>
           {menuItems.map((item) => (
             <div key={item.id} className={styles.menuItem}>
@@ -70,11 +72,9 @@ export default function MenuGrid({
   }
 
   return (
-    <div
-      className={`${styles.container} ${styles.bottomCorners}`}
-      tabIndex={0}
-      onKeyDown={handleKeyDown}
-    >
+    <div className={styles.container} tabIndex={0} onKeyDown={handleKeyDown}>
+      <span className={styles.cornerBottomLeft} aria-hidden="true"></span>
+      <span className={styles.cornerBottomRight} aria-hidden="true"></span>
       <div className={styles.menuGrid}>
         {menuItems.map((item, index) => (
           <div

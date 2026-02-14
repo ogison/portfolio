@@ -1,11 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
-  <rect width="128" height="128" fill="#0b0b0b" />
-  <rect x="14" y="14" width="100" height="100" fill="#12151b" stroke="#ffffff" stroke-width="4" />
-  <rect x="34" y="32" width="60" height="18" fill="#2f2fff" />
-  <rect x="28" y="58" width="72" height="8" fill="#ffffff" />
-  <rect x="28" y="72" width="72" height="8" fill="#ffffff" />
-  <rect x="28" y="86" width="52" height="8" fill="#ffffff" />
-  <text x="64" y="110" fill="#ffffff" font-family="monospace" font-size="12" text-anchor="middle">
-    WEB
-  </text>
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="Suzuki work icon">
+  <rect x="4" y="4" width="120" height="120" rx="14" fill="#bb1f2d" />
+  <rect x="14" y="14" width="100" height="100" rx="10" fill="none" stroke="#ffffff" stroke-width="6" />
+  <text
+    x="64"
+    y="84"
+    text-anchor="middle"
+    fill="#ffffff"
+    font-size="74"
+    font-style="italic"
+    font-weight="700"
+    font-family="Yu Mincho, Hiragino Mincho ProN, Noto Serif JP, serif"
+  >&#12383;</text>
 </svg>

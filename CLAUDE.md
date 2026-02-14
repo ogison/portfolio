@@ -6,6 +6,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a Famicom/NES-style portfolio website built with Next.js 15, featuring an 8-bit retro gaming aesthetic combined with modern web technologies. The design philosophy follows "PLAYFUL CODE, REAL IMPACT" - delivering professional content through a nostalgic gaming interface.
 
+## Naming and Folder Structure (Must Follow)
+
+The canonical rule set is documented in:
+
+- `docs/naming-and-folder-structure.md`
+
+When creating or editing files, follow these rules first:
+
+- React component files in `src/components` and `src/features`: `PascalCase.tsx`
+- Component style files: `PascalCase.module.scss` (same base name as component)
+- Hooks/utilities: `camelCase.ts` or `camelCase.tsx`
+- Next.js App Router reserved files in `src/app` remain reserved names (`page.tsx`, `layout.tsx`, `sitemap.ts`, `globals.css`)
+- Use `@/` alias for cross-folder imports
+
 ## Development Commands
 
 ```bash

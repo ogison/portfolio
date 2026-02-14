@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import type { KeyboardEvent } from "react";
 import Image from "next/image";
-import styles from "./works.module.scss";
+import styles from "./WorksShowcase.module.scss";
 
 export type WorkItem = {
   id: string;

@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import GameHeader from "@/features/header";
-import PixelAvatar from "@/features/avatar";
-import MenuGrid, { type MenuItem } from "@/features/menu";
-import MessageWindow from "@/features/message";
-import styles from "./home.module.scss";
+import GameHeader from "@/features/header/GameHeader";
+import PixelAvatar from "@/features/avatar/PixelAvatar";
+import MenuGrid, { type MenuItem } from "@/features/menu/MenuGrid";
+import MessageWindow from "@/features/message/MessageWindow";
+import styles from "./Home.module.scss";
 
 const menuItems = [
   { id: "about" as MenuItem, label: "はなす" },
