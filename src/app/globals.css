@@ -57,3 +57,23 @@ body {
     opacity: 0;
   }
 }
+
+@media (hover: hover) and (pointer: fine) {
+  *,
+  *::before,
+  *::after {
+    cursor: url("/cursors/famicom-cursor.svg") 1 1, default !important;
+  }
+
+  a,
+  button,
+  [role="button"],
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  label[for],
+  select,
+  summary {
+    cursor: url("/cursors/famicom-pointer.svg") 20 3, pointer !important;
+  }
+}

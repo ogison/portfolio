@@ -9,7 +9,7 @@ export type WorkItem = {
   id: string;
   title: string;
   price: string;
-  summary: string;
+  description: string;
   link: string;
   iconPath: string;
 };
@@ -19,7 +19,10 @@ const works: WorkItem[] = [
     id: "portfolio",
     title: "ポートフォリオ",
     price: "50,000 G",
-    summary: "RPG風UI・サウンド・モーションを備えたゲームライクなポートフォリオ。",
+    description:
+      "RPGみたいな世界観で作った、遊べるポートフォリオだよ。\n" +
+      "UIも音も動きも、ひとつずつこだわって仕上げてるんだ。\n" +
+      "よかったら実際に触って、雰囲気を感じてみてね。",
     link: "https://portfolio-ogison.vercel.app/",
     iconPath: "/images/works/portfolio.svg",
   },
@@ -27,7 +30,10 @@ const works: WorkItem[] = [
     id: "awawari",
     title: "割り勘計算アプリ",
     price: "10,000 G",
-    summary: "ビールのデザインをモチーフにした割り勘計算アプリ。",
+    description:
+      "ビールをモチーフにした、気軽に使える割り勘アプリだよ。\n" +
+      "人数と金額を入れるだけで、だれがいくら払うかすぐ分かるんだ。\n" +
+      "飲み会の会計をサッと決めたいときに使ってみてね。",
     link: "https://dutch-treat-smoky.vercel.app/",
     iconPath: "/images/works/awawari.svg",
   },
@@ -35,7 +41,10 @@ const works: WorkItem[] = [
     id: "suzuki",
     title: "鈴木たけろう ホームページ",
     price: "60,000 G",
-    summary: "各務原市議会議員 鈴木たけろうのホームページ",
+    description:
+      "各務原市議会議員・鈴木たけろうさんの活動や政策をまとめたホームページだよ。\n" +
+      "知りたい情報に迷わずたどり着けるよう、構成を分かりやすく整えてるんだ。\n" +
+      "必要な情報をすぐ読めることを大事にして作ったよ。",
     link: "https://suzukitakero-kakamigahara.jp/",
     iconPath: "/images/works/suzuki.svg",
   },

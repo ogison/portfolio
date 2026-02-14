@@ -20,7 +20,7 @@ export default function WorksPageContent() {
           <MessageWindow
             key={selectedWork?.id ?? "works-default-message"}
             selectedMenuItem="works"
-            customMessage={selectedWork ? selectedWork.summary : undefined}
+            customMessage={selectedWork ? selectedWork.description : undefined}
             plainTextOnly
           />
         </section>
