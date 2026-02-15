@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import GameHeader from "@/features/header/GameHeader";
 import PixelAvatar from "@/features/avatar/PixelAvatar";
 import MenuGrid, { type MenuItem } from "@/features/menu/MenuGrid";
@@ -16,8 +16,12 @@ const menuItems = [
 ];
 
 export default function Home() {
+  const searchParams = useSearchParams();
+  const fromShop = searchParams.get("from") === "shop";
   const [activeMenuIndex, setActiveMenuIndex] = useState(0);
-  const [selectedMenuItem, setSelectedMenuItem] = useState<MenuItem>("welcome");
+  const [selectedMenuItem, setSelectedMenuItem] = useState<MenuItem>(
+    fromShop ? "returnHome" : "welcome",
+  );
   const [isTyping, setIsTyping] = useState(false);
   const [menuSelectKey, setMenuSelectKey] = useState(0);
   const router = useRouter();
