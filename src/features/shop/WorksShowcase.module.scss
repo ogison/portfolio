@@ -10,9 +10,20 @@
   }
 }
 
+@media (max-width: 639px) {
+  .container {
+    min-height: 0;
+  }
+}
+
 .content {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.75rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: 1fr;
+  }
 
   @media (min-width: 840px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -74,6 +85,7 @@
 
 .itemName {
   flex: 1;
+  min-width: 0;
   font-size: 0.8rem;
 
   @media (min-width: 640px) {
@@ -110,6 +122,33 @@
   opacity: 0.8;
 }
 
+@media (max-width: 639px) {
+  .listItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+
+  .itemPrice {
+    align-self: flex-start;
+  }
+
+  .listBottomRow {
+    margin-top: auto;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .listFooter {
+    order: -1;
+    align-self: flex-end;
+  }
+
+  .listCommand {
+    align-self: flex-start;
+  }
+}
+
 .detailPanel {
   display: flex;
   flex-direction: column;
@@ -143,7 +182,8 @@
 
 .previewIcon {
   width: 240px;
-  height: 240px;
+  max-width: 100%;
+  height: auto;
   object-fit: contain;
   image-rendering: pixelated;
 }
