@@ -107,6 +107,11 @@ const messages = {
     "・くろき X のしるし（X/Twitter）\n" +
     "・みどりの知恵の書（Qiita)\n" +
     "さあ、好きな場所で 声をかけてくれ。",
+  returnHome:
+    "おかえり、旅人よ！\n" +
+    "ショップは 楽しめたかい？\n\n" +
+    "他にも なにか 見るかい？\n" +
+    "気になるものがあれば、えんりょなく 選んでくれ。",
 };
 
 export default function MessageWindow({

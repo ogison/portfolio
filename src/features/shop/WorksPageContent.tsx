@@ -15,7 +15,7 @@ export default function WorksPageContent() {
       <GameHeader />
       <main className={styles.main}>
         <div className={styles.backButtonRow}>
-          <Link href="/home" className={styles.backButton}>
+          <Link href="/home?from=shop" className={styles.backButton}>
             BACK TO HOME
           </Link>
         </div>

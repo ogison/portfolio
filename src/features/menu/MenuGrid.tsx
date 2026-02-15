@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import styles from "./MenuGrid.module.scss";
 
-export type MenuItem = "welcome" | "about" | "skills" | "works" | "contact";
+export type MenuItem = "welcome" | "about" | "skills" | "works" | "contact" | "returnHome";
 
 interface MenuGridProps {
   activeIndex: number;
