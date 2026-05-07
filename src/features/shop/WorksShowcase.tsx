@@ -48,6 +48,17 @@ const works: WorkItem[] = [
     link: "https://suzukitakero-kakamigahara.jp/",
     iconPath: "/images/works/suzuki.svg",
   },
+  {
+    id: "pixelom",
+    title: "Pixelom",
+    price: "20,000 G",
+    description:
+      "アップロードした画像をドット絵風に変換できるツールだよ。\n" +
+      "解像度や色数を調整して、好みのレトロな雰囲気に仕上げられるんだ。\n" +
+      "写真をピクセルアートにして遊びたいときに使ってみてね。",
+    link: "https://pixelom.pages.dev/",
+    iconPath: "/images/works/pixelom.svg",
+  },
 ];
 
 interface WorksShowcaseProps {
