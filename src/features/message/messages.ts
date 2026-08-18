@@ -106,8 +106,9 @@ export const messages: Record<Locale, MessageContent> = {
     welcome:
       "Oho! Welcome to my hall, traveler!\n" +
       "Here you may peek at a few of ogison's secrets.\n\n" +
-      "* Treasures on Display (Works)\n" +
+      "* Talk\n" +
       "* The Sealed Tome (Skills)\n" +
+      "* Treasures on Display (Works)\n" +
       "* Signpost for Travelers (Contact)\n\n" +
       "Well then — which shall it be?",
     about: [
