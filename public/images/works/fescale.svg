@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <rect width="128" height="128" fill="#0b0b0b" />
+  <rect x="14" y="14" width="100" height="100" fill="#151515" stroke="#ffffff" stroke-width="4" />
+
+  <!-- 綴じ金具 -->
+  <rect x="40" y="24" width="8" height="12" fill="#ffffff" />
+  <rect x="80" y="24" width="8" height="12" fill="#ffffff" />
+
+  <!-- カレンダー本体 -->
+  <rect x="26" y="32" width="76" height="52" fill="#0b0b0b" stroke="#ffffff" stroke-width="4" />
+  <!-- 見出しバー -->
+  <rect x="26" y="32" width="76" height="12" fill="#e60012" />
+
+  <!-- 日付のマス -->
+  <rect x="34" y="50" width="10" height="8" fill="#4a4a4a" />
+  <rect x="48" y="50" width="10" height="8" fill="#4a4a4a" />
+  <rect x="62" y="50" width="10" height="8" fill="#f7d51d" />
+  <rect x="76" y="50" width="10" height="8" fill="#4a4a4a" />
+  <rect x="34" y="62" width="10" height="8" fill="#4a4a4a" />
+  <rect x="48" y="62" width="10" height="8" fill="#92cc41" />
+  <rect x="62" y="62" width="10" height="8" fill="#4a4a4a" />
+  <rect x="76" y="62" width="10" height="8" fill="#4a4a4a" />
+  <rect x="34" y="74" width="10" height="6" fill="#4a4a4a" />
+  <rect x="48" y="74" width="10" height="6" fill="#4a4a4a" />
+  <rect x="62" y="74" width="10" height="6" fill="#4a4a4a" />
+  <rect x="76" y="74" width="10" height="6" fill="#5fb3ff" />
+
+  <!-- 音符（フェス＝ライブの印） -->
+  <rect x="76" y="90" width="6" height="14" fill="#ffffff" />
+  <rect x="82" y="90" width="12" height="5" fill="#ffffff" />
+  <rect x="68" y="98" width="10" height="8" fill="#ffffff" />
+</svg>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import styles from "./GameHeader.module.scss";
-import SoundToggle from "@/components/SoundToggle";
+import SettingsMenu from "@/components/SettingsMenu";
 
 const HEADER_STATS_STORAGE_KEY = "portfolio.header.stats";
 const HEADER_STATS_TTL_MS = 10 * 60 * 1000;
@@ -141,7 +141,7 @@ export default function GameHeader({
           </div>
         </div>
         <div className={styles.settingsSection}>
-          <SoundToggle />
+          <SettingsMenu />
         </div>
       </div>
     </header>

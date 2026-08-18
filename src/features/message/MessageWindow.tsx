@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { MenuItem } from "../menu/MenuGrid";
 import styles from "./MessageWindow.module.scss";
+import { useLocale } from "@/features/i18n/LocaleProvider";
 import { formatContactText, formatWorksText } from "@/features/message/contactUtils";
+import { messages } from "@/features/message/messages";
 import { useSound, useSoundSettings } from "@/features/message/useSound";
 
 interface MessageWindowProps {
@@ -13,100 +15,24 @@ interface MessageWindowProps {
   plainTextOnly?: boolean;
 }
 
-// メッセージ量に応じて表示スピードを動的に計算
-const calculateTypingSpeed = (messageLength: number): number => {
-  const baseSpeed = 20; // 最遅スピード（ms）- 高速化
-  const fastSpeed = 10; // 最速スピード（ms）
-  const threshold = 300; // 調整開始の文字数
+const BASE_SPEED = 20; // 1文字あたりの基本スピード（ms）
+const MAX_TYPING_DURATION = 4000; // 表示し切るまでの上限（ms）
+const MIN_INTERVAL = 16; // setIntervalの実用的な下限（ms）
 
-  if (messageLength <= threshold) {
-    return baseSpeed;
+// メッセージ量に応じて表示スピードを動的に計算する。
+// 基本は1文字20msだが、そのままだと4秒を超える長さのときは
+// 1文字あたりの時間を圧縮し、全体が MAX_TYPING_DURATION に収まるようにする。
+// 圧縮の結果 MIN_INTERVAL を下回る場合は、1tickで複数文字ずつ進めて帳尻を合わせる
+// （setIntervalは数msの間隔を正確に刻めないため）。
+const calculateTypingPlan = (messageLength: number): { interval: number; charsPerTick: number } => {
+  if (messageLength <= 0) {
+    return { interval: BASE_SPEED, charsPerTick: 1 };
   }
 
-  // 線形に速度を上げる（文字数が多いほど早く）
-  const speedReduction = Math.min((messageLength - threshold) / 200, 1);
-  return Math.max(fastSpeed, baseSpeed - (baseSpeed - fastSpeed) * speedReduction);
-};
+  const idealInterval = Math.min(BASE_SPEED, MAX_TYPING_DURATION / messageLength);
+  const charsPerTick = Math.max(1, Math.ceil(MIN_INTERVAL / idealInterval));
 
-const messages = {
-  welcome:
-    "おや？ 旅人よ、ようこそ 我が館へ！\n" +
-    "ここでは ogison の ひみつを 少しばかり のぞくことができるんだ。\n\n" +
-    "・ショップ（作品）\n" +
-    "・封印の書物（スキル） \n" +
-    "・旅人へのしるべ（コンタクト）\n\n" +
-    "さあ、どれを 見てみるかい？",
-  about: [
-    // パターン1: 空想・夢見がち
-    "僕はね、ときどき空を見上げては\n" +
-      "『雲の上にはどんな街があるんだろう？』って考えるんだ。\n\n" +
-      "雲でできた船に乗って、空を旅してみたい。\n" +
-      "そんな空想が、僕の心をいつも軽くしてくれるんだ。",
-
-    // パターン2: 食べ物・小さな幸せ
-    "僕の楽しみのひとつは、温かいご飯を食べること。\n\n" +
-      "どんなに大変な日でも、\n" +
-      "一口目のスープや焼きたてのパンで\n" +
-      "『ああ、生きてるなぁ』って思えるんだ。\n\n" +
-      "小さな幸せが、明日の力になるんだよね。",
-
-    // パターン3: 哲学・ちょっと不思議な考え
-    "最近よく考えるんだけど…\n" +
-      "『もし僕が誰かの夢の中の登場人物だったら？』ってね。\n\n" +
-      "でもまあ、それでも構わないかな。\n" +
-      "だって、こうして誰かと出会い、\n" +
-      "言葉を交わせるなら、それだけで本物の旅だと思うんだ。",
-
-    // ビール
-    "僕は ビールが好きなんだ。、\n" +
-      "ただ。家ではほとんど飲まなくて、酒場に出かけたときには\n" +
-      "ずっとビールばかりを たしなんでいるよ。\n\n" +
-      "まだ見ぬ美味い店を探し、\n" +
-      "新たな一杯に出会うことを楽しみにしてる。\n\n" +
-      "クラフトビール巡りをしたい、、、\n",
-  ],
-  skills:
-    "おや？ 旅人よ、封印の書物を ひらいてしまったのか。\n" +
-    "ここには 僕 が 旅のあいだに 身につけた技と、\n" +
-    "あつかってきた道具の記録が 記されているんだ。\n\n" +
-    "【術・技】\n" +
-    "・HTML —— 世界の骨格を形づくる力\n" +
-    "・CSS —— 彩りを与える装飾の術\n" +
-    "・JavaScript —— 動きを吹き込む生命の術\n" +
-    "・React —— UIを自在に操る秘術\n" +
-    "・Next.js —— 影と光を操り 未来を描く術\n" +
-    "・Git / GitHub —— 仲間と絆を結ぶ協調の術\n" +
-    "・AWS —— 遠き場所へ瞬時に渡る転移の力\n" +
-    "・Python —— 知恵と解析を操る賢者の術\n" +
-    "・Java —— 堅牢な城壁を築く騎士の力\n" +
-    "・Spring —— 大地に根ざし、強固な基盤を支える術\n\n" +
-    "【道具・ツール】\n" +
-    "・Docker —— 船出を助ける 移動する港\n" +
-    "・Notion —— 知識を収める 無限の書庫\n" +
-    "・Slack —— 仲間と声を交わす 伝令の水晶\n" +
-    "・Jira —— クエストを管理する 任務の巻物\n" +
-    "・Claude —— 賢者のごとく 助言を授ける霊\n" +
-    "・V0 —— 形なき力を即座に形にする 魔導の炉\n" +
-    "・Sentry —— 闇を見張り 不具合を暴く番兵\n" +
-    "・Datadog —— 世界を見渡す 千里眼の獣\n" +
-    "・Cursor —— 書を操る 魔法の羽ペン\n" +
-    "・Backlog —— 任務を束ねる 冒険者ギルドの帳簿\n" +
-    "・Redmine —— 記録を刻む 古き石板\n\n" +
-    "さあ、どの力や道具を 見てみるかい？",
-  works:
-    "ようこそ、作品ショップへ。\n\n" +
-    "ここには 旅の途中で うみだした宝が ならんでいる。\n" +
-    "気になる品をえらぶと、プレビューと説明が あらわれるよ。\n" +
-    "リンクをひらけば、実際の作品の世界へ すすむこともできる。\n\n" +
-    "さあ、好きなものを選んでみてね。",
-  contact:
-    "やあ、ここまで来てくれてありがとう。\n" +
-    "外の世界で また会えるように\n" +
-    "しるべを 用意しておいたよ。\n\n" +
-    "・ねこの かげ（GitHub）\n" +
-    "・くろき X のしるし（X/Twitter）\n" +
-    "・みどりの知恵の書（Qiita)\n" +
-    "さあ、好きな場所で 声をかけてくれ。",
+  return { interval: idealInterval * charsPerTick, charsPerTick };
 };
 
 export default function MessageWindow({
@@ -120,27 +46,34 @@ export default function MessageWindow({
   const [isTypingComplete, setIsTypingComplete] = useState(false);
 
   const { soundEnabled } = useSoundSettings();
+  const { locale } = useLocale();
+  // aboutのランダム選択はマウント時に一度だけ決める。
+  // こうしないと言語を切り替えるたびに別のエピソードに変わってしまう。
+  const aboutIndexRef = useRef<number | null>(null);
   const typeSound = useSound("/sounds/message-type.mp3", {
     volume: 0.3,
     preload: true,
   });
 
   useEffect(() => {
+    const localeMessages = messages[locale];
     let message: string;
 
     if (customMessage !== undefined) {
       message = customMessage;
     } else if (selectedMenuItem === "about") {
       // aboutの場合はランダムに選択
-      const aboutMessages = messages.about;
-      const randomIndex = Math.floor(Math.random() * aboutMessages.length);
-      message = aboutMessages[randomIndex];
+      const aboutMessages = localeMessages.about;
+      if (aboutIndexRef.current === null) {
+        aboutIndexRef.current = Math.floor(Math.random() * aboutMessages.length);
+      }
+      message = aboutMessages[aboutIndexRef.current % aboutMessages.length];
     } else {
-      message = messages[selectedMenuItem] as string;
+      message = localeMessages[selectedMenuItem];
     }
 
     // メッセージ長に基づいて動的にタイピングスピードを計算
-    const typingSpeed = calculateTypingSpeed(message.length);
+    const { interval: typingSpeed, charsPerTick } = calculateTypingPlan(message.length);
 
     setDisplayedText("");
     setShowCursor(false);
@@ -157,7 +90,8 @@ export default function MessageWindow({
 
     const typeInterval = setInterval(() => {
       if (currentIndex < message.length) {
-        setDisplayedText(message.slice(0, currentIndex + 1));
+        const nextIndex = Math.min(currentIndex + charsPerTick, message.length);
+        setDisplayedText(message.slice(0, nextIndex));
 
         const currentTime = Date.now();
         if (
@@ -171,7 +105,7 @@ export default function MessageWindow({
           lastSoundTime = currentTime;
         }
 
-        currentIndex++;
+        currentIndex = nextIndex;
       } else {
         if (soundEnabled) {
           typeSound.stop();
@@ -188,7 +122,7 @@ export default function MessageWindow({
       typeSound.stop();
       onTypingChange?.(false);
     };
-  }, [customMessage, selectedMenuItem, onTypingChange, soundEnabled]);
+  }, [customMessage, selectedMenuItem, onTypingChange, soundEnabled, locale]);
 
   const formatText = (text: string) => {
     const lines = text.split("\n");
