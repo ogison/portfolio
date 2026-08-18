@@ -1,35 +1,69 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import GameHeader from "@/features/header/GameHeader";
-import MessageWindow from "@/features/message/MessageWindow";
-import WorksShowcase, { type WorkItem } from "@/features/shop/WorksShowcase";
+import { useRouter } from "next/navigation";
+import ShopStage from "./ShopStage";
 import styles from "./WorksPageContent.module.scss";
+import WorksShowcase from "./WorksShowcase";
+import { resolveWorks } from "./works";
+import { useLocale } from "@/features/i18n/LocaleProvider";
+import { useBeep } from "@/features/message/useBeep";
+import MessageWindow from "@/features/message/MessageWindow";
 
 export default function WorksPageContent() {
-  const [selectedWork, setSelectedWork] = useState<WorkItem | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [isTyping, setIsTyping] = useState(false);
+  const router = useRouter();
+  const { locale } = useLocale();
+  const beep = useBeep();
+
+  const works = resolveWorks(locale);
+  const selectedWork = selectedIndex === null ? null : (works[selectedIndex] ?? null);
+
+  const handleSelect = (index: number) => {
+    beep("confirm");
+    setActiveIndex(index);
+    setSelectedIndex(index);
+  };
+
+  const handleActiveIndexChange = (index: number) => {
+    if (index !== activeIndex) {
+      beep("move");
+    }
+    setActiveIndex(index);
+  };
+
+  const handleBack = () => {
+    beep("confirm");
+    router.push("/home");
+  };
 
   return (
     <div className={styles.gameContainer}>
-      <GameHeader />
       <main className={styles.main}>
-        <div className={styles.backButtonRow}>
-          <Link href="/home" className={styles.backButton}>
-            BACK TO HOME
-          </Link>
+        <ShopStage selectedWork={selectedWork} itemCount={works.length} isTyping={isTyping} />
+        <div className={styles.goodsRow}>
+          <div className={styles.goods}>
+            <WorksShowcase
+              works={works}
+              activeIndex={activeIndex}
+              selectedIndex={selectedIndex}
+              onActiveIndexChange={handleActiveIndexChange}
+              onSelect={handleSelect}
+              onBack={handleBack}
+            />
+          </div>
+          <div className={styles.message}>
+            <MessageWindow
+              key={selectedWork?.id ?? "works-default-message"}
+              selectedMenuItem="works"
+              customMessage={selectedWork ? selectedWork.description : undefined}
+              onTypingChange={setIsTyping}
+              plainTextOnly
+            />
+          </div>
         </div>
-        <section className={styles.showcase}>
-          <WorksShowcase onSelectedWorkChange={setSelectedWork} />
-        </section>
-        <section className={styles.message}>
-          <MessageWindow
-            key={selectedWork?.id ?? "works-default-message"}
-            selectedMenuItem="works"
-            customMessage={selectedWork ? selectedWork.description : undefined}
-            plainTextOnly
-          />
-        </section>
       </main>
     </div>
   );

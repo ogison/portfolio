@@ -6,6 +6,8 @@
   display: flex;
   flex-direction: column;
   flex: 1;
+  // メッセージが切り替わるたび（key の付け替えで再マウントされるたび）に開き直す。
+  animation: windowOpen 0.12s steps(3) both;
 
   @media (min-width: 640px) {
     padding: 1rem;
@@ -102,6 +104,16 @@
   }
 }
 
+// ウィンドウが開く演出。滑らかに動かさず steps で段階的に開く。
+@keyframes windowOpen {
+  from {
+    transform: scaleY(0.1);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
 @keyframes bounce {
   0%,
   100% {
@@ -145,5 +157,17 @@
 @keyframes linkBlink {
   50% {
     opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .container {
+    animation: none;
+  }
+
+  .cursor,
+  .arrow,
+  .link::after {
+    animation: none;
   }
 }

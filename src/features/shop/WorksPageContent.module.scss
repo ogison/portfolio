@@ -1,7 +1,7 @@
 .gameContainer {
   width: 100%;
   max-width: 1200px;
-  min-height: 100vh;
+  min-height: 100dvh;
   border: 4px solid #fff;
   padding: 8px;
   background-color: var(--background);
@@ -12,55 +12,55 @@
 
   @media (min-width: 640px) {
     padding: 16px;
-    height: 110vh;
   }
 }
 
 .main {
-  flex: 1;
-  min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  padding: 4px;
-  overflow: auto;
+  gap: 0.5rem;
+  flex: 1;
+
+  @media (min-width: 640px) {
+    gap: 1rem;
+  }
 }
 
-.backButtonRow {
+// /home と同じく、スマホは縦積み、広い画面では一覧とメッセージを横に並べる。
+.goodsRow {
   display: flex;
-  justify-content: flex-start;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+
+  @media (min-width: 640px) {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 1.25rem;
+  }
 }
 
-.backButton {
-  display: inline-block;
-  border: 2px solid #ffffff;
-  padding: 0.4rem 0.75rem;
-  color: #ffffff;
-  text-decoration: none;
-  font-size: 0.875rem;
-  line-height: 1;
-  transition:
-    background-color 0.15s ease,
-    color 0.15s ease;
-}
+.goods {
+  display: flex;
+  flex-direction: column;
 
-.backButton:hover,
-.backButton:focus,
-.backButton:focus-visible {
-  background-color: #ffffff;
-  color: #000000 !important;
-}
+  @media (min-width: 640px) {
+    width: 430px;
+    flex-shrink: 0;
+  }
 
-.showcase {
-  flex: 0 0 auto;
-  min-height: 0;
+  // 一覧のウィンドウ枠をメッセージウィンドウと同じ高さまで伸ばす
+  > div {
+    flex: 1;
+  }
 }
 
 .message {
-  min-height: 180px;
   display: flex;
-}
-
-.message > * {
   flex: 1;
+  min-height: 200px;
+
+  @media (min-width: 640px) {
+    min-height: auto;
+  }
 }
