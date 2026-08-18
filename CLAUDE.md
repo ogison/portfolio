@@ -4,525 +4,121 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Famicom/NES-style portfolio website built with Next.js 15, featuring an 8-bit retro gaming aesthetic combined with modern web technologies. The design philosophy follows "PLAYFUL CODE, REAL IMPACT" - delivering professional content through a nostalgic gaming interface.
+A Famicom/NES-style personal portfolio site (Next.js 15 App Router + React 19). The whole site is a small RPG: a title screen, a "castle" home with a DQ-style menu and message window, and a "shop" that sells the author's works. Content is Japanese; the tone is deliberately in-character (旅人よ／宝／封印の書物).
+
+Deployed at https://portfolio-ogison.vercel.app/ (Vercel).
+
+## Commands
+
+```bash
+npm run dev      # dev server (Turbopack)
+npm run build    # production build (Turbopack)
+npm run start    # serve the production build
+npm run lint     # eslint (flat config, next/core-web-vitals + next/typescript)
+npm run format   # prettier --write .
+npx tsc --noEmit # typecheck — there is no npm script for this
+```
+
+There is **no test infrastructure** in this repo (no test runner, no test files). Do not invent a `npm test` invocation; verify changes with `npm run build` and by running the dev server.
+
+Husky `pre-commit` runs `npm run format` then `npm run lint` **across the whole repo**. The `lint-staged` block in `package.json` exists but is _not_ wired into the hook — editing it changes nothing until the hook is updated.
 
 ## Naming and Folder Structure (Must Follow)
 
-The canonical rule set is documented in:
+The canonical rules live in `docs/naming-and-folder-structure.md`. `AGENTS.md` carries the same summary for other agents — **keep the three files in sync** when conventions change.
 
-- `docs/naming-and-folder-structure.md`
+- Components in `src/components` and `src/features`: `PascalCase.tsx`
+- Styles: `PascalCase.module.scss`, same base name as its component, same folder
+- Hooks/utilities: `camelCase.ts` / `camelCase.tsx`
+- `src/app` keeps Next.js reserved names (`page.tsx`, `layout.tsx`, `sitemap.ts`, `globals.css`)
+- Cross-folder imports use the `@/` alias; relative imports only within the same feature folder
 
-When creating or editing files, follow these rules first:
+Layer responsibility: `app/` = routes + metadata only · `components/` = cross-feature UI · `features/` = domain UI and logic grouped by feature.
 
-- React component files in `src/components` and `src/features`: `PascalCase.tsx`
-- Component style files: `PascalCase.module.scss` (same base name as component)
-- Hooks/utilities: `camelCase.ts` or `camelCase.tsx`
-- Next.js App Router reserved files in `src/app` remain reserved names (`page.tsx`, `layout.tsx`, `sitemap.ts`, `globals.css`)
-- Use `@/` alias for cross-folder imports
+## Architecture
 
-## Development Commands
-
-```bash
-# Start development server with Turbopack
-npm run dev
-
-# Build for production with Turbopack
-npm run build
-
-# Start production server
-npm run start
-
-# Run ESLint
-npm run lint
-
-# Format code with Prettier
-npm run format
-
-# Install Husky hooks (runs automatically on npm install)
-npm run prepare
-```
-
-## Architecture & Structure
-
-### Tech Stack
-
-- **Framework**: Next.js 15.5.2 with App Router + React 19
-- **Language**: TypeScript 5.6+ (strict mode)
-- **Build Tool**: Turbopack (dev & production)
-- **Styling**: Tailwind CSS v4 + NES.css (CDN)
-- **Font**: Press Start 2P (next/font optimized)
-- **Code Quality**: ESLint 9, Prettier 3, Husky, lint-staged
-- **Performance**: Partial Prerendering (PPR), Streaming
-
-### Key Design Patterns
-
-#### 1. Famicom/8-bit UI Components
-
-All UI components follow retro gaming conventions:
-
-- **Color Palette**:
-  - Primary accent: `#e60012` (Nintendo red)
-  - Background: `#1a1a1a`
-  - Text: `#f5f5f5`
-- **Pixel borders**: 2px solid borders with box shadows
-- **Animations**: Pixel-perfect movements, blink effects, bounce animations
-- **Typography**: Press Start 2P font for headings, maintaining readability
-
-#### 2. Component Structure
+### Route flow
 
 ```
-src/components/
-├── Hero.tsx           # Landing hero section with "PRESS START" CTA
-├── Navigation.tsx     # Keyboard-navigable menu (↑↓←→ + Enter)
-├── ProjectCard.tsx    # Project showcase cards with impact metrics
-└── PixelButton.tsx    # A/B button-style interactive elements
+/         src/app/page.tsx      → StartScreen; Enter or click fades out and router.push("/home")
+/home     src/app/home/page.tsx → features/home/Home.tsx   (avatar + menu + message window)
+/shop     src/app/shop/page.tsx → features/shop/WorksPageContent.tsx (works list + preview + message window)
 ```
 
-#### 3. Keyboard Navigation
+`app/*/page.tsx` files are intentionally thin — they set `metadata` and render one feature component. All real UI is a Client Component (`"use client"`); there is no server-side data fetching, no API routes, and no Server Actions.
 
-The site supports full keyboard navigation:
+Menu selection in `Home.tsx` is split: `works` navigates to `/shop`, everything else just swaps the message shown in place.
 
-- Arrow keys for menu navigation
-- Enter/Space for selection
-- Escape to close menus
-- Focus states with red outline (`#e60012`)
+### Where the content lives
 
-## Design Requirements (from docs/portfolio-content-ja.md)
+All site content is **hardcoded as module-level data**, not fetched from a CMS or data layer. Everything user-visible is bilingual — see the i18n section below:
 
-### Content Sections to Implement
+- `src/features/message/messages.ts` — `messages: Record<Locale, MessageContent>`: welcome / about (an array, one picked at random per mount) / skills / works / contact text
+- `src/features/shop/WorksShowcase.tsx` — the `workSources` array (title and description per locale; id, price in G, link, icon path shared)
+- `src/features/message/contactUtils.tsx` — `contactLinks` (GitHub / X / Qiita) and `worksLinks`, plus the linkifiers that turn keywords and `【title】` spans into anchors after typing finishes
 
-- **Home**: Hero, 3-line summary, project highlights, CTAs
-- **About**: Personal introduction, timeline, work style
-- **Skills**: Core competencies, tech stack, design principles
-- **Works/Projects**: 6-8 featured projects with metrics
-- **Demos/Labs**: Interactive experiments and mini-games
-- **Writing/Notes**: Technical articles and learning logs
-- **Resume**: 1-page PDF, ATS-friendly
-- **Contact**: Form with spam protection, social links
+Work icons are SVGs under `public/images/works/`.
 
-### Project Card Data Structure
+### Cross-cutting patterns
 
-Projects should include:
+**Typewriter + remount-by-key.** `MessageWindow` types text out character by character (`calculateTypingPlan` scales the per-character speed so any message finishes within 4s — long messages advance several characters per tick). It has no imperative replay API — callers force a replay by changing its `key`: `Home.tsx` bumps a `menuSelectKey` counter so re-selecting the same menu item replays, and `WorksPageContent` keys on `selectedWork?.id`. Preserve this when refactoring.
 
-- Title, summary, role, team composition
-- Impact metrics (quantified improvements)
-- Tech stack tags
-- Links to demo/repository
-- Architecture diagrams (pixel-art style)
+**Sound.** `src/features/message/useSound.ts` exports `useSound` (per-audio-element playback) and `useSoundSettings` (the global on/off flag). State is persisted in `localStorage` under `portfolio-sound-enabled` and synced two ways: the native `storage` event for other tabs, and a custom `window` event named `soundToggle` for other components in the same tab. Any new component reading or writing the flag must dispatch `soundToggle` after writing, or the settings panel and the message window fall out of sync. **Sound defaults to ON.** Note that `useSoundSettings` only exposes a `toggleSound()` — `SettingsMenu` gets explicit ON/OFF buttons by toggling only when the requested state differs from the current one.
 
-## Styling Guidelines
+**Settings menu.** `src/components/SettingsMenu.tsx` is the header's single gear button; it owns both user-facing preferences (language and sound). The dropdown is **only mounted while open** — that is deliberate, not incidental: `soundEnabled` comes from `localStorage` during the first render, so rendering it on page load would produce a hydration mismatch. Keep new `localStorage`-derived UI inside the panel, or apply the `mounted`-flag pattern below. Closing is handled by a `mousedown` listener outside the container and by Escape (which restores focus to the gear).
 
-### CSS Custom Properties
+**Hydration guards.** Anything nondeterministic or `localStorage`-dependent should stay out of the first render:
 
-```css
---background: #1a1a1a --foreground: #f5f5f5 --accent: #e60012 --success: #92cc41 --warning: #f7d51d
-  --error: #e76e55;
-```
+- `MenuGrid` renders a non-interactive variant until a `mounted` flag flips in `useEffect`
+- `GameHeader` renders fixed default stats, then in `useEffect` reads/creates random LV/HP/MP cached in `localStorage` under `portfolio.header.stats` with a 10-minute TTL
 
-### Responsive Design
+The sound hooks are the exception: `useSound`/`useSoundSettings` read `localStorage` inside their `useState` initializers. Nothing renders that state on page load today (the settings panel is unmounted while closed), so no mismatch surfaces — but any component that shows sound state outside the panel will resurrect it. Follow the `MenuGrid`/`GameHeader` pattern in new code rather than copying the hooks.
 
-- Mobile-first approach
-- Breakpoints: `md:768px`, `lg:1024px`
-- Touch-friendly with keyboard fallbacks
+**Keyboard navigation.** `MenuGrid` (2-column grid: ↑↓ jump by 2, ←→ move within a row, Enter/Space select) and `WorksShowcase`'s list panel handle their own `onKeyDown` on a `tabIndex={0}` container. The title screen listens for Enter on `document`.
 
-## Implementation Notes
+## Internationalization (ja / en)
 
-### NES.css Integration
+The site is bilingual with **no locale in the URL** — `/`, `/home`, `/shop` serve both languages and the header's settings menu swaps content in place.
 
-The project uses NES.css via CDN for authentic 8-bit UI components. Use classes like:
+- `src/features/i18n/LocaleProvider.tsx` — `LocaleProvider` (mounted in `app/layout.tsx` around `children`), the `useLocale()` hook, and the `Locale` / `LocalizedText` types. Choice persists in `localStorage` under `portfolio-locale`, and an effect keeps `document.documentElement.lang` in sync.
+- `src/components/SettingsMenu.tsx` — the language picker lives in the gear dropdown (see Settings menu above).
+- Components read `const { locale } = useLocale()` and index their own `Record<Locale, …>` table. There is no `t()` function and no translation-key indirection; the text lives next to the component that renders it.
 
-- `nes-btn` for buttons
-- `nes-container` for bordered boxes
-- `is-primary`, `is-success` for variants
+Rules when adding or editing content:
 
-### Performance Considerations
+- **SSR and the first client render are always `ja`** (`DEFAULT_LOCALE`). Never read `localStorage` in a `useState` initializer — that is exactly the bug the sound hooks have.
+- **`MessageWindow` must re-type on locale change** — `locale` is in its typing-effect dependency array. Its random `about` pick is held in a `useRef` so switching languages keeps the same episode instead of rerolling.
+- **The contact message must literally contain `GitHub`, `X/Twitter`, and `Qiita`** in both locales — `formatContactText` linkifies by substring match, so rewording those parentheticals silently kills the links.
+- **`welcome`'s bullet list must match the menu labels** in `Home.tsx` for that locale.
+- **`about` should have the same number of entries in both locales** (the index is reused across a language switch).
+- Locale-independent chrome (`NAME` / `JOB` / `LV` / `HP` / `MP`, `OPEN PROJECT`, `BACK TO HOME`, `PRESS ENTER KEY`, prices in `G`) is intentionally left in English as retro-game styling — don't translate it. The settings panel is the exception: its section labels read `げんご` / `サウンド` in Japanese, matching the in-world tone of the menu items.
 
-- Image rendering set to `pixelated` for authentic 8-bit look
-- Lazy loading for project images
-- Minimal animation durations (< 500ms)
+Not covered by the toggle: `app/layout.tsx` metadata, OG tags, `sitemap.ts`, and `public/manifest.json` are still Japanese-only, since a client-side toggle cannot vary server-rendered `<head>`. Moving to `/ja` + `/en` route segments is what that would require.
 
-### Accessibility
+## Styling
 
-- Maintain WCAG AA contrast ratios
-- Provide keyboard alternatives for all interactions
-- Sound effects default to OFF
-- Clear focus indicators
-
-## Future Development Areas
-
-### Planned Features
-
-1. **Data Layer**: Create `/src/data/` for projects, skills, experience
-2. **Custom Hooks**: Implement `/src/hooks/useKeyboardNavigation.ts`
-3. **Type Definitions**: Add `/src/types/` for project interfaces
-4. **Utility Functions**: Build `/src/lib/` for common operations
-5. **Interactive Elements**: KONAMI code easter egg, achievement system
-6. **Internationalization**: Japanese/English language toggle
-
-### Content Management
-
-- Projects should be stored as structured data (JSON/YAML)
-- Support for MDX for rich content in project details
-- Automated OG image generation with 8-bit frames
-
-## Next.js 15 Best Practices
-
-### App Router Patterns
-
-```typescript
-// Server Component (default) - for static content
-export default function ProjectsPage() {
-  // Server-side data fetching
-  const projects = await getProjects();
-  return <ProjectList projects={projects} />;
-}
-
-// Client Component - for interactivity
-"use client";
-import { useState } from "react";
-export function KeyboardNavigation() {
-  const [selected, setSelected] = useState(0);
-  // Interactive logic here
-}
-```
-
-### Server vs Client Components
-
-- **Server Components** (default): Static content, data fetching, SEO
-- **Client Components** (`"use client"`): User interactions, browser APIs, React hooks
-- **Boundary Pattern**: Keep client components as leaf nodes when possible
-
-### Data Fetching & Streaming
-
-```typescript
-// Streaming with Suspense
-import { Suspense } from "react";
-
-export default function ProjectsLayout() {
-  return (
-    <Suspense fallback={<PixelSpinner />}>
-      <ProjectGrid />
-    </Suspense>
-  );
-}
-
-// Server Actions for forms
-export async function submitContact(formData: FormData) {
-  "use server";
-  const email = formData.get("email") as string;
-  // Validation and processing
-}
-```
-
-### Performance Optimization
-
-```typescript
-// Dynamic imports for code splitting
-const GameComponent = dynamic(() => import("@/components/Game"), {
-  loading: () => <PixelLoader />,
-});
-
-// Image optimization
-import Image from "next/image";
-<Image
-  src="/projects/screenshot.png"
-  alt="Project screenshot"
-  width={640}
-  height={480}
-  style={{ imageRendering: "pixelated" }}
-  priority={false}
-  placeholder="blur"
-/>;
-```
-
-## TypeScript Best Practices
-
-### Strict Configuration (tsconfig.json)
-
-```json
-{
-  "compilerOptions": {
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
-  }
-}
-```
-
-### Type-Safe Patterns
-
-```typescript
-// Utility types for project data
-type ProjectBase = {
-  id: string;
-  title: string;
-  description: string;
-  tags: readonly string[];
-};
-
-type ProjectWithMetrics = ProjectBase & {
-  impact: Record<string, number>;
-  testimonial?: string;
-};
-
-// Template literal types for theme colors
-type ThemeColor = `--${"background" | "foreground" | "accent" | "success" | "warning" | "error"}`;
-
-// Generic constraints for components
-interface PixelButtonProps<T extends string = "button"> {
-  variant: "A" | "B" | "START" | "SELECT";
-  as?: T;
-  children: React.ReactNode;
-}
-
-// The satisfies operator for type safety
-const projectConfig = {
-  maxItems: 8,
-  categories: ["web", "mobile", "game"] as const,
-  filters: {
-    tech: ["nextjs", "react", "typescript"],
-    type: ["frontend", "fullstack", "backend"],
-  },
-} satisfies {
-  maxItems: number;
-  categories: readonly string[];
-  filters: Record<string, string[]>;
-};
-```
-
-### Component Type Patterns
-
-```typescript
-// Polymorphic component pattern
-type PolymorphicProps<T extends React.ElementType> = {
-  as?: T;
-} & React.ComponentPropsWithoutRef<T>;
-
-function PixelContainer<T extends React.ElementType = "div">({
-  as,
-  children,
-  ...props
-}: PolymorphicProps<T>) {
-  const Component = as || "div";
-  return <Component className="nes-container" {...props}>{children}</Component>;
-}
-
-// Forward ref with generics
-const PixelInput = React.forwardRef<
-  HTMLInputElement,
-  React.InputHTMLAttributes<HTMLInputElement> & {
-    variant?: "primary" | "success" | "warning" | "error";
-  }
->(({ variant = "primary", ...props }, ref) => {
-  return <input ref={ref} className={`nes-input is-${variant}`} {...props} />;
-});
-```
-
-## Code Organization & Architecture
-
-### File Structure (Enhanced)
-
-```
-src/
-├── app/                          # Next.js App Router
-│   ├── (routes)/                # Route groups
-│   │   ├── about/
-│   │   ├── projects/
-│   │   └── contact/
-│   ├── api/                     # API routes
-│   ├── globals.css
-│   ├── layout.tsx              # Root layout
-│   ├── loading.tsx             # Global loading UI
-│   ├── error.tsx               # Global error UI
-│   ├── not-found.tsx           # 404 page
-│   └── page.tsx                # Home page
-├── components/                  # Reusable UI components
-│   ├── ui/                     # Base UI components
-│   │   ├── PixelButton.tsx
-│   │   ├── PixelContainer.tsx
-│   │   └── PixelInput.tsx
-│   ├── forms/                  # Form components
-│   ├── navigation/             # Navigation components
-│   └── layout/                 # Layout components
-├── lib/                        # Utility functions
-│   ├── utils.ts               # General utilities
-│   ├── validations.ts         # Zod schemas
-│   ├── constants.ts           # App constants
-│   └── types.ts               # Shared types
-├── hooks/                      # Custom React hooks
-│   ├── useKeyboardNavigation.ts
-│   ├── useLocalStorage.ts
-│   └── usePixelAnimations.ts
-├── data/                       # Static data & content
-│   ├── projects.ts
-│   ├── skills.ts
-│   └── experience.ts
-└── styles/                     # Global styles
-    ├── globals.css
-    └── components.css
-```
-
-### Component Composition
-
-```typescript
-// Compound component pattern
-const ProjectCard = {
-  Root: ({ children, ...props }: React.PropsWithChildren<{}>) => (
-    <div className="nes-container with-title" {...props}>
-      {children}
-    </div>
-  ),
-  Title: ({ children }: { children: React.ReactNode }) => (
-    <p className="title">{children}</p>
-  ),
-  Content: ({ children }: { children: React.ReactNode }) => (
-    <div className="content">{children}</div>
-  ),
-  Actions: ({ children }: { children: React.ReactNode }) => (
-    <div className="actions">{children}</div>
-  ),
-};
-
-// Usage
-<ProjectCard.Root>
-  <ProjectCard.Title>Project Name</ProjectCard.Title>
-  <ProjectCard.Content>Description</ProjectCard.Content>
-  <ProjectCard.Actions>
-    <PixelButton variant="A">View Demo</PixelButton>
-  </ProjectCard.Actions>
-</ProjectCard.Root>
-```
-
-## Security Best Practices
-
-### Content Security Policy
-
-```typescript
-// next.config.js
-const securityHeaders = [
-  {
-    key: "Content-Security-Policy",
-    value: [
-      "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // For NES.css
-      "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
-      "font-src 'self' fonts.gstatic.com",
-      "img-src 'self' data: blob:",
-    ].join("; "),
-  },
-];
-```
-
-### Environment Variables
-
-```typescript
-// lib/env.ts - Type-safe environment variables
-import { z } from "zod";
-
-const envSchema = z.object({
-  NODE_ENV: z.enum(["development", "production", "test"]),
-  NEXT_PUBLIC_APP_URL: z.string().url(),
-  DATABASE_URL: z.string().optional(),
-  EMAIL_API_KEY: z.string().optional(),
-});
-
-export const env = envSchema.parse(process.env);
-```
-
-### Server Actions Security
-
-```typescript
-// Server action with validation
-import { z } from "zod";
-import { redirect } from "next/navigation";
-
-const contactSchema = z.object({
-  name: z.string().min(2).max(50),
-  email: z.string().email(),
-  message: z.string().min(10).max(1000),
-});
-
-export async function submitContactForm(formData: FormData) {
-  "use server";
-
-  const result = contactSchema.safeParse({
-    name: formData.get("name"),
-    email: formData.get("email"),
-    message: formData.get("message"),
-  });
-
-  if (!result.success) {
-    throw new Error("Invalid form data");
-  }
-
-  // Process form submission
-  await sendEmail(result.data);
-  redirect("/contact/success");
-}
-```
-
-## Code Conventions
-
-### Component Guidelines
-
-- Use Server Components by default, Client Components only when needed
-- Implement proper TypeScript types for all props
-- Use compound component patterns for complex UI
-- Apply `image-rendering: pixelated` for retro graphics
-- Leverage React 19's automatic batching and concurrent features
-
-### State Management
-
-```typescript
-// URL state for navigation (recommended)
-import { useSearchParams, useRouter } from "next/navigation";
-
-function useProjectFilters() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
-  const filters = {
-    category: searchParams.get("category") || "all",
-    tech: searchParams.getAll("tech"),
-  };
-
-  const updateFilters = (newFilters: Partial<typeof filters>) => {
-    const params = new URLSearchParams(searchParams);
-    // Update logic
-    router.push(`/projects?${params.toString()}`);
-  };
-
-  return { filters, updateFilters };
-}
-```
-
-### Performance Guidelines
-
-- Use `next/dynamic` for code splitting heavy components
-- Implement proper loading states with Suspense
-- Optimize images with `next/image` and appropriate sizing
-- Use `next/font` for font optimization
-- Leverage Partial Prerendering (PPR) for static/dynamic content mix
-
-### Testing Approach
-
-```typescript
-// Recommended test setup (when implementing)
-// jest.config.js
-module.exports = {
-  testEnvironment: "jsdom",
-  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
-  moduleNameMapping: {
-    "^@/(.*)$": "<rootDir>/src/$1",
-  },
-};
-
-// Focus areas:
-// - Component rendering and props
-// - Keyboard navigation functionality
-// - Accessibility compliance
-// - Server Actions integration
-// - Type safety validation
-```
+Three layers coexist — know which one you are touching:
+
+1. **SCSS Modules** (`*.module.scss`) — where nearly all component styling actually lives
+2. **NES.css 2.3.0 via CDN** — loaded by a `<link>` in `app/layout.tsx`; barely used now that the header buttons are custom-styled, but still loaded and still affecting inherited `font-family` on `button` elements
+3. **Tailwind v4** — `@import "tailwindcss"` in `globals.css`; used only in a few places (e.g. `PixelAvatar`'s sizing utilities)
+
+Palette (`globals.css`): background `#000` (forced with `!important` on `html`/`body`), accent `#e60012`, success `#33ff33`, info `#3333ff`.
+
+Two global rules in `globals.css` will fight you if you don't know about them:
+
+- `*, *::before, *::after { color: #ffffff !important; }` overrides NES.css text colors — **any colored text needs its own `!important`**. Because that selector's specificity is 0,0,0, a class in a `*.module.scss` beats it (`MessageWindow`'s `.link`, `SettingsMenu`'s `.trigger`). Watch for this on any `nes-btn` with a text label: the default variant is white-on-white and the label goes invisible.
+- Custom Famicom cursors (`public/cursors/*.svg`) are applied with `!important` under `@media (hover: hover) and (pointer: fine)`
+
+Fonts: `Press Start 2P` via `next/font` (exposed as `--font-press-start-2p`, applied through the `.font-press-start` class); body defaults to `DotGothic16`. `image-rendering: pixelated` is set globally on `body`.
+
+## Config notes
+
+- `next.config.ts` sets security headers, one-year immutable caching for `/fonts`, `/images`, `/sounds`, AVIF/WebP image formats, `experimental.optimizeCss` (needs the `critters` dep), and strips `console.*` in production builds — so `console.log` debugging only works in dev.
+- `NEXT_PUBLIC_APP_URL` overrides the canonical base URL used by `layout.tsx` metadata and `sitemap.ts`; it falls back to the Vercel URL.
+- `app/sitemap.ts` currently advertises `/about`, `/projects`, `/skills`, `/demos`, `/writing`, `/resume`, `/contact` — **none of these routes exist**. The only real routes are `/`, `/home`, `/shop`.
+- `.github/workflows/claude.yml` runs claude-code-action on `@claude` mentions in issues/PR comments, with a Japanese-response system prompt.
+
+## Planned direction
+
+`docs/portfolio-content-ja.md` holds the author's intended content plan (About / Skills / Works / Demos / Writing / Resume / Contact sections, project card fields, metrics). Treat it as a backlog of intent, not as a description of what is built. `docs/design_screen.md` holds screen design notes.

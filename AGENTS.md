@@ -21,3 +21,11 @@ Apply these conventions for all new and modified files:
 - `src/app`: route entry points and metadata
 - `src/components`: reusable cross-feature UI parts
 - `src/features`: feature/domain grouped UI and logic
+
+## Bilingual Content (ja / en)
+
+Every user-visible string is bilingual. Components call `useLocale()` from
+`src/features/i18n/LocaleProvider.tsx` and index their own `Record<Locale, ...>` table;
+there is no `t()` function. SSR and the first client render are always `ja` — never read
+`localStorage` in a `useState` initializer. See the Internationalization section of
+`CLAUDE.md` for the content rules (contact-link substrings, welcome/menu label parity).

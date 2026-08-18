@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Press_Start_2P } from "next/font/google";
+import { LocaleProvider } from "@/features/i18n/LocaleProvider";
 import "./globals.css";
 
 const pressStart2P = Press_Start_2P({
@@ -90,7 +91,9 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link rel="stylesheet" href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" />
       </head>
-      <body className={`${pressStart2P.variable}`}>{children}</body>
+      <body className={`${pressStart2P.variable}`}>
+        <LocaleProvider>{children}</LocaleProvider>
+      </body>
     </html>
   );
 }
