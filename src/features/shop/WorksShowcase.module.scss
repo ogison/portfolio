@@ -1,48 +1,73 @@
-﻿.container {
+// しなもの一覧。/home の MenuGrid（コマンドウィンドウ）と同じ意匠にそろえる。
+// globals.css の `*, *::before, *::after { color: #fff !important }` は詳細度 0,0,0 なので、
+// 白以外の文字色はクラス側で `!important` を付けて上書きする（`::before` のカーソルも同様）。
+.container {
+  border: 4px solid #fff;
+  padding: 0.5rem;
   background-color: var(--background);
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  min-height: 640px;
-
-  @media (min-width: 640px) {
-    min-height: 420px;
-  }
-}
-
-@media (max-width: 639px) {
-  .container {
-    min-height: 0;
-  }
-}
-
-.content {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
-
-  @media (min-width: 640px) {
-    grid-template-columns: 1fr;
-  }
-
-  @media (min-width: 840px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
-    align-items: stretch;
-  }
-}
-
-.listPanel {
-  border: 2px solid #fff;
-  padding: 0.75rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  min-height: 360px;
+  position: relative;
   outline: none;
+  display: flex;
+  flex-direction: column;
+  animation: windowOpen 0.12s steps(3) both;
 
-  &:focus {
-    border-color: #fff;
+  @media (min-width: 640px) {
+    padding: 0.75rem 1rem;
+  }
+
+  // Top corners
+  &::before {
+    content: "";
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    width: 8px;
+    height: 8px;
+    background-color: var(--background);
+    box-shadow: 4px 4px 0 #fff;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 8px;
+    height: 8px;
+    background-color: var(--background);
+    box-shadow: -4px 4px 0 #fff;
+  }
+}
+
+.cornerBottomLeft,
+.cornerBottomRight {
+  position: absolute;
+  bottom: -4px;
+  width: 8px;
+  height: 8px;
+  background-color: var(--background);
+  pointer-events: none;
+}
+
+.cornerBottomLeft {
+  left: -4px;
+  box-shadow: 4px -4px 0 #fff;
+}
+
+.cornerBottomRight {
+  right: -4px;
+  box-shadow: -4px -4px 0 #fff;
+}
+
+.title {
+  margin: 0 0 0.125rem;
+  padding-left: 0.375rem;
+  font-size: 0.6875rem;
+  color: #b9b0d8 !important;
+
+  @media (min-width: 640px) {
+    font-size: 0.875rem;
+    margin-bottom: 0.375rem;
   }
 }
 
@@ -51,219 +76,102 @@
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 0.4rem;
+  gap: 2px;
 }
 
+// 1行。指で押せるよう高さは 46px 以上を確保する。
 .listItem {
+  cursor: pointer;
+  position: relative;
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  padding: 0.35rem 0.4rem;
-  position: relative;
-  cursor: pointer;
-  transition:
-    color 0.2s ease,
-    background-color 0.2s ease;
+  min-height: 46px;
+  padding: 0.25rem 0.5rem 0.25rem 1.75rem;
 
   &:hover {
-    color: #fff !important;
+    color: var(--accent) !important;
+    transform: translateX(2px);
+  }
+
+  &.active {
+    transform: translateX(2px);
+  }
+
+  &.active::before {
+    content: "▶";
+    position: absolute;
+    left: 0.375rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent) !important;
+    animation: blink 1s step-end infinite;
   }
 }
 
-.active::before {
-  content: ">";
-  position: absolute;
-  left: -0.75rem;
-  color: #fff !important;
-  animation: blink 1s step-end infinite;
-}
-
-.selected {
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.45);
+// カウンターに出している品は、カーソルが離れても選択中と分かるようにしておく。
+.selected .itemName {
+  color: #ffe74c !important;
 }
 
 .itemName {
   flex: 1;
   min-width: 0;
-  font-size: 0.8rem;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  word-break: break-word;
 
   @media (min-width: 640px) {
-    font-size: 0.95rem;
+    font-size: 1.125rem;
   }
 }
 
 .itemPrice {
-  color: #ffc857 !important;
+  color: #ffc93c !important;
   font-size: 0.75rem;
   white-space: nowrap;
 
   @media (min-width: 640px) {
-    font-size: 0.9rem;
+    font-size: 0.9375rem;
   }
 }
 
-.listFooter {
-  font-size: 0.7rem;
-  color: #ffc857 !important;
+// DQのみせの「やめる」にあたる行。区切り線を入れて品物と分ける。
+.backRow {
+  margin-top: 0.25rem;
+  border-top: 2px solid #444;
+  padding-top: 0.25rem;
 }
 
-.listBottomRow {
-  margin-top: auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 0.5rem;
-}
-
-.listCommand {
-  text-align: left;
-  font-size: 0.7rem;
-  opacity: 0.8;
-}
-
-@media (max-width: 639px) {
-  .listItem {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.2rem;
-  }
-
-  .itemPrice {
-    align-self: flex-start;
-  }
-
-  .listBottomRow {
-    margin-top: auto;
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .listFooter {
-    order: -1;
-    align-self: flex-end;
-  }
-
-  .listCommand {
-    align-self: flex-start;
-  }
-}
-
-.detailPanel {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  min-height: 360px;
-}
-
-.previewFrame {
-  border: 2px solid var(--success);
-  min-height: 360px;
-  height: 100%;
+.backLink {
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 0.75rem;
-}
-
-.previewEmpty {
-  opacity: 0.6;
-  letter-spacing: 0.08em;
-  font-size: 0.8rem;
-}
-
-.previewContent {
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-  align-items: center;
-}
-
-.previewIcon {
-  width: 240px;
-  max-width: 100%;
-  height: auto;
-  object-fit: contain;
-  image-rendering: pixelated;
-}
-
-.previewLinkRow {
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 0.75rem;
-}
-
-.previewLinkPlaceholder {
-  opacity: 0.6;
-}
-
-.previewStack {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  justify-content: center;
-}
-
-.stackChip {
-  border: 1px solid #fff;
-  padding: 0.2rem 0.35rem;
-  font-size: 0.65rem;
-}
-
-.detailBox {
-  border: 2px solid #fff;
-  padding: 0.75rem;
-  min-height: 140px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.detailTitle {
-  color: var(--success) !important;
-  letter-spacing: 0.08em;
-  font-size: 0.75rem;
-}
-
-.detailBody {
-  font-size: 0.75rem;
-  line-height: 1.5;
-
-  p {
-    margin: 0 0 0.5rem;
-  }
-}
-
-.link {
-  color: var(--accent) !important;
-  text-decoration: none;
+  min-height: 46px;
+  padding: 0.25rem 0.5rem 0.25rem 1.75rem;
   position: relative;
+  color: #fff !important;
+  text-decoration: none;
+  font-size: 0.9375rem;
+  transition: color 0.2s;
 
-  &::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -2px;
-    height: 2px;
-    background-color: var(--accent);
-    animation: linkBlink 1s step-end infinite;
+  @media (min-width: 640px) {
+    font-size: 1.125rem;
   }
 
   &:hover {
-    background-color: var(--accent);
-    color: var(--background) !important;
-    padding: 0 0.25rem;
-    margin: 0 -0.25rem;
+    color: var(--accent) !important;
   }
 }
 
-.focusHint {
-  font-size: 0.65rem;
-  opacity: 0.6;
+.backRow.active .backLink::before {
+  content: "▶";
+  position: absolute;
+  left: 0.375rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--accent) !important;
+  animation: blink 1s step-end infinite;
 }
 
 @keyframes blink {
@@ -272,8 +180,23 @@
   }
 }
 
-@keyframes linkBlink {
-  50% {
-    opacity: 0;
+// ウィンドウが開く演出。滑らかに動かさず steps で段階的に開く。
+@keyframes windowOpen {
+  from {
+    transform: scaleY(0.1);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .container {
+    animation: none;
+  }
+
+  .listItem.active::before,
+  .backRow.active .backLink::before {
+    animation: none;
   }
 }

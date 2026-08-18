@@ -24,9 +24,13 @@ const randomBlinkDelay = () =>
 
 interface PixelAvatarProps {
   isTyping?: boolean;
+  /** 外枠のサイズ指定を差し替える。渡さない場合は既定のサイズを使う。 */
+  className?: string;
 }
 
-export default function PixelAvatar({ isTyping = false }: PixelAvatarProps) {
+const DEFAULT_SIZE_CLASS = "w-32 h-32 sm:w-48 sm:h-48 md:w-60 md:h-60 p-1";
+
+export default function PixelAvatar({ isTyping = false, className }: PixelAvatarProps) {
   const [frame, setFrame] = useState<AvatarFrame>("idle");
 
   // 喋っている間は口パク
@@ -66,15 +70,15 @@ export default function PixelAvatar({ isTyping = false }: PixelAvatarProps) {
 
   // 表示の瞬間に読み込むと絵が欠けるので、3枚とも重ねて置き分けを表示だけで切り替える
   return (
-    <div className="w-32 h-32 sm:w-48 sm:h-48 md:w-60 md:h-60 p-1">
+    <div className={className ?? DEFAULT_SIZE_CLASS}>
       <div className="relative w-full h-full" role="img" aria-label="Pixel Art Avatar">
         {FRAMES.map(({ name, src }) => (
           <Image
             key={name}
             src={src}
             alt=""
-            width={128}
-            height={128}
+            width={256}
+            height={256}
             className={`absolute inset-0 w-full h-full ${name === frame ? "" : "invisible"}`}
             style={{ imageRendering: "pixelated" }}
             priority

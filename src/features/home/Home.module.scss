@@ -1,7 +1,7 @@
 .gameContainer {
   width: 100%;
   max-width: 1200px;
-  min-height: 100vh;
+  min-height: 100dvh;
   border: 4px solid #fff;
   padding: 8px;
   background-color: var(--background);
@@ -12,35 +12,52 @@
 
   @media (min-width: 640px) {
     padding: 16px;
-    height: 110vh;
   }
 }
 
-.panel {
+.main {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  flex: 1;
 
   @media (min-width: 640px) {
     gap: 1rem;
   }
+}
 
-  .window {
-    flex-grow: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem;
+// スマホは「舞台 → コマンド → メッセージ」の縦積み、
+// 画面が広いときはコマンドとメッセージを横に並べる（DQのたたかい画面と同じ配置）。
+.commandRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
 
-    @media (min-width: 640px) {
-      padding: 1rem;
-    }
+  @media (min-width: 640px) {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 1.25rem;
   }
 }
 
-.messageContainer {
-  overflow: hidden;
-  padding: 4px;
+.command {
+  display: flex;
+  flex-direction: column;
+
+  @media (min-width: 640px) {
+    width: 360px;
+    flex-shrink: 0;
+  }
+
+  // MenuGrid のウィンドウ枠をメッセージウィンドウと同じ高さまで伸ばす
+  > div {
+    flex: 1;
+  }
+}
+
+.message {
+  display: flex;
   flex: 1;
   min-height: 200px;
 

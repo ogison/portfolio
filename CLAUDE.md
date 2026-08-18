@@ -41,8 +41,8 @@ Layer responsibility: `app/` = routes + metadata only · `components/` = cross-f
 
 ```
 /         src/app/page.tsx      → StartScreen; Enter or click fades out and router.push("/home")
-/home     src/app/home/page.tsx → features/home/Home.tsx   (avatar + menu + message window)
-/shop     src/app/shop/page.tsx → features/shop/WorksPageContent.tsx (works list + preview + message window)
+/home     src/app/home/page.tsx → features/home/Home.tsx   (battle screen: BattleStage + command list + message window)
+/shop     src/app/shop/page.tsx → features/shop/WorksPageContent.tsx (shop screen: ShopStage + goods list + message window)
 ```
 
 `app/*/page.tsx` files are intentionally thin — they set `metadata` and render one feature component. All real UI is a Client Component (`"use client"`); there is no server-side data fetching, no API routes, and no Server Actions.
@@ -54,7 +54,7 @@ Menu selection in `Home.tsx` is split: `works` navigates to `/shop`, everything 
 All site content is **hardcoded as module-level data**, not fetched from a CMS or data layer. Everything user-visible is bilingual — see the i18n section below:
 
 - `src/features/message/messages.ts` — `messages: Record<Locale, MessageContent>`: welcome / about (an array, one picked at random per mount) / skills / works / contact text
-- `src/features/shop/WorksShowcase.tsx` — the `workSources` array (title and description per locale; id, price in G, link, icon path shared)
+- `src/features/shop/works.ts` — the `workSources` array (title and description per locale; id, price in G, link, icon path shared) and `resolveWorks(locale)`. `WorksShowcase.tsx` renders it as the しなもの command window
 - `src/features/message/contactUtils.tsx` — `contactLinks` (GitHub / X / Qiita) and `worksLinks`, plus the linkifiers that turn keywords and `【title】` spans into anchors after typing finishes
 
 Work icons are SVGs under `public/images/works/`.
@@ -70,11 +70,11 @@ Work icons are SVGs under `public/images/works/`.
 **Hydration guards.** Anything nondeterministic or `localStorage`-dependent should stay out of the first render:
 
 - `MenuGrid` renders a non-interactive variant until a `mounted` flag flips in `useEffect`
-- `GameHeader` renders fixed default stats, then in `useEffect` reads/creates random LV/HP/MP cached in `localStorage` under `portfolio.header.stats` with a 10-minute TTL
+- `useHeaderStats` (`src/features/header/useHeaderStats.ts`) returns fixed default stats on the first render, then in `useEffect` reads/creates random LV/HP/MP cached in `localStorage` under `portfolio.header.stats` with a 10-minute TTL. `BattleStage` (`/home`) uses it. `GameHeader` also uses it but is no longer rendered anywhere — `/shop` now shows a GOLD window instead — so it is dead code kept only in case the old header is wanted back
 
-The sound hooks are the exception: `useSound`/`useSoundSettings` read `localStorage` inside their `useState` initializers. Nothing renders that state on page load today (the settings panel is unmounted while closed), so no mismatch surfaces — but any component that shows sound state outside the panel will resurrect it. Follow the `MenuGrid`/`GameHeader` pattern in new code rather than copying the hooks.
+The sound hooks are the exception: `useSound`/`useSoundSettings` read `localStorage` inside their `useState` initializers. Nothing renders that state on page load today (the settings panel is unmounted while closed), so no mismatch surfaces — but any component that shows sound state outside the panel will resurrect it. Follow the `MenuGrid`/`useHeaderStats` pattern in new code rather than copying the hooks.
 
-**Keyboard navigation.** `MenuGrid` (2-column grid: ↑↓ jump by 2, ←→ move within a row, Enter/Space select) and `WorksShowcase`'s list panel handle their own `onKeyDown` on a `tabIndex={0}` container. The title screen listens for Enter on `document`.
+**Keyboard navigation.** `MenuGrid` (single-column command list: ↑↓ move by 1 and wrap, ←→ do nothing, Enter/Space select) and `WorksShowcase`'s goods list (↑↓ cycle through the works **and** the trailing 「みせを でる」 row, Enter/Space select) handle their own `onKeyDown` on a `tabIndex={0}` container. The title screen listens for Enter on `document`.
 
 ## Internationalization (ja / en)
 
@@ -91,7 +91,7 @@ Rules when adding or editing content:
 - **The contact message must literally contain `GitHub`, `X/Twitter`, and `Qiita`** in both locales — `formatContactText` linkifies by substring match, so rewording those parentheticals silently kills the links.
 - **`welcome`'s bullet list must match the menu labels** in `Home.tsx` for that locale.
 - **`about` should have the same number of entries in both locales** (the index is reused across a language switch).
-- Locale-independent chrome (`NAME` / `JOB` / `LV` / `HP` / `MP`, `OPEN PROJECT`, `BACK TO HOME`, `PRESS ENTER KEY`, prices in `G`) is intentionally left in English as retro-game styling — don't translate it. The settings panel is the exception: its section labels read `げんご` / `サウンド` in Japanese, matching the in-world tone of the menu items.
+- Locale-independent chrome (`NAME` / `JOB` / `LV` / `HP` / `MP`, `OPEN PROJECT`, `PRESS ENTER KEY`, prices in `G`) is intentionally left in English as retro-game styling — don't translate it. The settings panel is the exception: its section labels read `げんご` / `サウンド` in Japanese, matching the in-world tone of the menu items.
 
 Not covered by the toggle: `app/layout.tsx` metadata, OG tags, `sitemap.ts`, and `public/manifest.json` are still Japanese-only, since a client-side toggle cannot vary server-rendered `<head>`. Moving to `/ja` + `/en` route segments is what that would require.
 

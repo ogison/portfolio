@@ -2,8 +2,17 @@
 
 import { useEffect, useState } from "react";
 import styles from "./MenuGrid.module.scss";
+import { type Locale, useLocale } from "@/features/i18n/LocaleProvider";
 
 export type MenuItem = "welcome" | "about" | "skills" | "works" | "contact";
+
+const titleByLocale: Record<Locale, string> = {
+  ja: "コマンド",
+  en: "COMMAND",
+};
+
+// コマンドは縦1列に並べる。↑↓ は1つずつ移動し、←→ は動かない。
+const COL_COUNT = 1;
 
 interface MenuGridProps {
   activeIndex: number;
@@ -19,31 +28,31 @@ export default function MenuGrid({
   menuItems,
 }: MenuGridProps) {
   const [mounted, setMounted] = useState(false);
+  const { locale } = useLocale();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    const colCount = 2;
     switch (e.key) {
       case "ArrowUp":
         e.preventDefault();
-        onMenuChange((activeIndex - colCount + menuItems.length) % menuItems.length);
+        onMenuChange((activeIndex - COL_COUNT + menuItems.length) % menuItems.length);
         break;
       case "ArrowDown":
         e.preventDefault();
-        onMenuChange((activeIndex + colCount) % menuItems.length);
+        onMenuChange((activeIndex + COL_COUNT) % menuItems.length);
         break;
       case "ArrowLeft":
         e.preventDefault();
-        if (activeIndex % colCount !== 0) {
+        if (activeIndex % COL_COUNT !== 0) {
           onMenuChange(activeIndex - 1);
         }
         break;
       case "ArrowRight":
         e.preventDefault();
-        if (activeIndex % colCount !== colCount - 1) {
+        if (activeIndex % COL_COUNT !== COL_COUNT - 1) {
           onMenuChange(activeIndex + 1);
         }
         break;
@@ -60,6 +69,7 @@ export default function MenuGrid({
       <div className={styles.container}>
         <span className={styles.cornerBottomLeft} aria-hidden="true"></span>
         <span className={styles.cornerBottomRight} aria-hidden="true"></span>
+        <p className={styles.title}>{titleByLocale[locale]}</p>
         <div className={styles.menuGrid}>
           {menuItems.map((item) => (
             <div key={item.id} className={styles.menuItem}>
@@ -75,6 +85,7 @@ export default function MenuGrid({
     <div className={styles.container} tabIndex={0} onKeyDown={handleKeyDown}>
       <span className={styles.cornerBottomLeft} aria-hidden="true"></span>
       <span className={styles.cornerBottomRight} aria-hidden="true"></span>
+      <p className={styles.title}>{titleByLocale[locale]}</p>
       <div className={styles.menuGrid}>
         {menuItems.map((item, index) => (
           <div

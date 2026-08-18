@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import GameHeader from "@/features/header/GameHeader";
-import PixelAvatar from "@/features/avatar/PixelAvatar";
+import BattleStage from "./BattleStage";
+import styles from "./Home.module.scss";
 import { type Locale, useLocale } from "@/features/i18n/LocaleProvider";
 import MenuGrid, { type MenuItem } from "@/features/menu/MenuGrid";
+import { useBeep } from "@/features/message/useBeep";
 import MessageWindow from "@/features/message/MessageWindow";
-import styles from "./Home.module.scss";
 
 // ラベルの並びは MessageWindow の welcome メッセージの箇条書きと対応させること。
 const menuItemsByLocale: Record<Locale, Array<{ id: MenuItem; label: string }>> = {
@@ -32,9 +32,11 @@ export default function Home() {
   const [menuSelectKey, setMenuSelectKey] = useState(0);
   const router = useRouter();
   const { locale } = useLocale();
+  const beep = useBeep();
   const menuItems = menuItemsByLocale[locale];
 
   const handleMenuSelect = (item: MenuItem) => {
+    beep("confirm");
     if (item === "works") {
       router.push("/shop");
       return;
@@ -50,30 +52,32 @@ export default function Home() {
   };
 
   const handleMenuChange = (index: number) => {
+    if (index !== activeMenuIndex) {
+      beep("move");
+    }
     setActiveMenuIndex(index);
   };
 
   return (
     <div className={styles.gameContainer}>
-      <GameHeader />
-      <main>
-        <div className={styles.panel}>
-          <div className={styles.window}>
-            <PixelAvatar isTyping={isTyping} />
+      <main className={styles.main}>
+        <BattleStage isTyping={isTyping} flashKey={menuSelectKey} />
+        <div className={styles.commandRow}>
+          <div className={styles.command}>
+            <MenuGrid
+              activeIndex={activeMenuIndex}
+              onMenuSelect={handleMenuSelect}
+              onMenuChange={handleMenuChange}
+              menuItems={menuItems}
+            />
           </div>
-          <MenuGrid
-            activeIndex={activeMenuIndex}
-            onMenuSelect={handleMenuSelect}
-            onMenuChange={handleMenuChange}
-            menuItems={menuItems}
-          />
-        </div>
-        <div className={styles.messageContainer}>
-          <MessageWindow
-            selectedMenuItem={selectedMenuItem}
-            onTypingChange={setIsTyping}
-            key={menuSelectKey}
-          />
+          <div className={styles.message}>
+            <MessageWindow
+              selectedMenuItem={selectedMenuItem}
+              onTypingChange={setIsTyping}
+              key={menuSelectKey}
+            />
+          </div>
         </div>
       </main>
     </div>
