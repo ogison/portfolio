@@ -53,7 +53,8 @@ src/
   components/
     StartScreen.tsx
     StartScreen.module.scss
-    SoundToggle.tsx
+    SettingsMenu.tsx
+    SettingsMenu.module.scss
 
   features/
     avatar/
@@ -65,12 +66,15 @@ src/
     home/
       Home.tsx
       Home.module.scss
+    i18n/
+      LocaleProvider.tsx
     menu/
       MenuGrid.tsx
       MenuGrid.module.scss
     message/
       MessageWindow.tsx
       MessageWindow.module.scss
+      messages.ts
       useSound.ts
       contactUtils.tsx
     shop/
